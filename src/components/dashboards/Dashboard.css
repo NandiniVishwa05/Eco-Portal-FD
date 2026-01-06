@@ -1,0 +1,145 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    background: linear-gradient(90deg, #eafff6, #f3fff9);
+    border-radius: 12px;
+    padding: 10px 20px;
+}
+
+.brand {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.logo {
+    width: 64px;
+    height: 64px;
+    border-radius: 14px;
+    background: linear-gradient(180deg, #e7fff3, #d1fbec);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    box-shadow: var(--shadow);
+    flex-shrink: 0;
+}
+
+.title {
+    font-size: 20px;
+    color: var(--emerald-1);
+    font-weight: 800;
+    line-height: 1.2;
+}
+
+.subtitle {
+    font-size: 13px;
+    color: var(--muted);
+}
+
+.top-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.panel-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.profile {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    padding: 12px;
+    border-radius: 12px;
+    background: linear-gradient(90deg, #f7fff8, #ffffff);
+    border: 1px solid rgba(6, 40, 30, 0.03);
+    margin-top: 12px;
+    flex-wrap: wrap;
+}
+
+.avatar {
+    width: 72px;
+    height: 72px;
+    border-radius: 12px;
+    background: linear-gradient(90deg, #dff9ee, #bff2de);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    color: var(--emerald-1);
+    flex-shrink: 0;
+}
+
+.meta h3 {
+    margin: 0 0 4px 0;
+    font-size: 18px;
+    color: #042a24;
+}
+
+.metrics {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+}
+
+.top-tabs {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+}
+
+.tabpanel {
+    margin-top: 12px;
+}
+
+.badge {
+    display: inline-block;
+    padding: 4px 10px;
+    background: var(--emerald-1);
+    color: white;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+@media (max-width: 768px) {
+    .header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .brand {
+        justify-content: flex-start;
+        margin-bottom: 8px;
+    }
+
+    .top-actions {
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    .panel-head {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .panel-head>div:last-child {
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+}

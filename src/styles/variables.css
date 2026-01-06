@@ -1,0 +1,14 @@
+:root {
+  --bg1: #f1f9f6;
+  --bg2: #e9fff6;
+  --emerald-1: #0f7b6b;
+  --emerald-2: #1aa07a;
+  --card: #fff;
+  --muted: #527066;
+  --radius: 14px;
+  --shadow: 0 12px 30px rgba(10, 60, 50, 0.06);
+  --accent-grad: linear-gradient(90deg, var(--emerald-1), var(--emerald-2));
+  --hot-1: #bff0d6;
+  --hot-2: #f39c12;
+  --hot-3: #c0392b;
+}
