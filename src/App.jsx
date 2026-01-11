@@ -1,91 +1,123 @@
-import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider, useAuth } from './context/AuthContext';
-import Landing from './components/auth/Landing';
-import CodeEntry from './components/auth/CodeEntry';
-import GovernmentDashboard from './components/dashboards/GovernmentDashboard';
-import CitizenDashboard from './components/dashboards/CitizenDashboard';
-import InstitutionDashboard from './components/dashboards/InstitutionDashboard';
-import CollegeDashboard from './components/dashboards/CollegeDashboard';
-import OtherDashboard from './components/dashboards/OtherDashboard';
-import './styles/global.css';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import LandingPage from "./pages/Landing/LandingPage";
+import SelectOrganizationType from "./pages/SelectOrganizationType/SelectOrganizationType";
+import Login from "./pages/Auth/Login";
+import Signup from "./pages/Auth/Signup";
+import ForgotPassword from "./pages/Auth/ForgotPassword";
+import VerifyOtp from "./pages/Auth/VerifyOtp";
+import SetPassword from "./pages/Auth/SetPassword";
 
-function ProtectedRoute({ children, requiredRole }) {
-    const { isAuthenticated, role } = useAuth();
+// route guards
+import ProtectedRoute from "./routes/ProtectedRoute";
+import PublicRoute from "./routes/PublicRoute";
 
-    if (!isAuthenticated) {
-        return <Navigate to="/" replace />;
-    }
+import NotFound from "./pages/NotFound/NotFound";
+import DashboardRedirect from "./pages/Dashboard/DashboardRedirect";
+import DashboardShell from "./pages/Dashboard/DashboardShell";
 
-    if (requiredRole && role !== requiredRole) {
-        return <Navigate to={`/dashboard/${role}`} replace />;
-    }
+import ActivitiesTab from "./pages/Dashboard/tabs/Activities/ActivitiesTab";
+import ProgressTab from "./pages/Dashboard/tabs/Progress/ProgressTab";
+import HeatmapTab from "./pages/Dashboard/tabs/Heatmap/HeatmapTab";
+import LeaderboardTab from "./pages/Dashboard/tabs/Leaderboard/LeaderboardTab";
+import AnalyticsTab from "./pages/Dashboard/tabs/Analytics/AnalyticsTab";
+import RewardsTab from "./pages/Dashboard/tabs/Rewards/RewardsTab";
+import CertificatesTab from "./pages/Dashboard/tabs/Certificates/CertificatesTab";
+import OverviewTab from "./pages/Dashboard/tabs/Overview/OverviewTab";
 
-    return children;
-}
-
-function AppRoutes() {
-    return (
-        <Routes>
-            <Route path="/" element={<Landing />} />
-            <Route path="/code-entry" element={<CodeEntry />} />
-
-            <Route
-                path="/dashboard/government"
-                element={
-                    <ProtectedRoute requiredRole="government">
-                        <GovernmentDashboard />
-                    </ProtectedRoute>
-                }
-            />
-
-            <Route
-                path="/dashboard/citizen"
-                element={
-                    <ProtectedRoute requiredRole="citizen">
-                        <CitizenDashboard />
-                    </ProtectedRoute>
-                }
-            />
-
-            <Route
-                path="/dashboard/institution"
-                element={
-                    <ProtectedRoute requiredRole="institution">
-                        <InstitutionDashboard />
-                    </ProtectedRoute>
-                }
-            />
-
-            <Route
-                path="/dashboard/college"
-                element={
-                    <ProtectedRoute requiredRole="college">
-                        <CollegeDashboard />
-                    </ProtectedRoute>
-                }
-            />
-
-            <Route
-                path="/dashboard/other"
-                element={
-                    <ProtectedRoute requiredRole="other">
-                        <OtherDashboard />
-                    </ProtectedRoute>
-                }
-            />
-
-            <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-    );
-}
+// temporary dashboard placeholder
+const Dashboard = () => <h1>Dashboard</h1>;
 
 export default function App() {
     return (
-        <AuthProvider>
-            <BrowserRouter>
-                <AppRoutes />
-            </BrowserRouter>
-        </AuthProvider>
+        <BrowserRouter>
+            <Routes>
+                {/* AUTH ROUTES (blocked when logged in) */}
+                <Route
+                    path="/"
+                    element={
+                        <PublicRoute>
+                            <LandingPage />
+                        </PublicRoute>
+                    } />
+                <Route
+                    path="/select-organization"
+                    element={
+                        <PublicRoute>
+                            <SelectOrganizationType />
+                        </PublicRoute>
+                    }
+                />
+                <Route
+                    path="/auth/login"
+                    element={
+                        <PublicRoute>
+                            <Login />
+                        </PublicRoute>
+                    }
+                />
+                <Route
+                    path="/auth/signup"
+                    element={
+                        <PublicRoute>
+                            <Signup />
+                        </PublicRoute>
+                    }
+                />
+                <Route
+                    path="/auth/forgot-password"
+                    element={
+                        <PublicRoute>
+                            <ForgotPassword />
+                        </PublicRoute>
+                    }
+                />
+                <Route
+                    path="/auth/verify-otp"
+                    element={
+                        <PublicRoute>
+                            <VerifyOtp />
+                        </PublicRoute>
+                    }
+                />
+                <Route
+                    path="/auth/set-password"
+                    element={
+                        <PublicRoute>
+                            <SetPassword />
+                        </PublicRoute>
+                    }
+                />
+
+                {/* PROTECTED ROUTES */}
+                <Route
+                    path="/dashboard"
+                    element={
+                        <ProtectedRoute>
+                            <DashboardRedirect />
+                        </ProtectedRoute>
+                    }
+                />
+
+                {/* DASHBOARD PAGES (we’ll fill these next) */}
+                <Route
+                    path="/dashboard/:role/*"
+                    element={
+                        <ProtectedRoute>
+                            <DashboardShell />
+                        </ProtectedRoute>
+                    }
+                >
+                    <Route path="activities" element={<ActivitiesTab />} />
+                    <Route path="progress" element={<ProgressTab />} />
+                    <Route path="heatmap" element={<HeatmapTab />} />
+                    <Route path="leaderboard" element={<LeaderboardTab />} />
+                    <Route path="analytics" element={<AnalyticsTab />} />
+                    <Route path="rewards" element={<RewardsTab />} />
+                    <Route path="certificates" element={<CertificatesTab />} />
+                    <Route path="overview" element={<OverviewTab />} />
+                </Route>
+                <Route path="*" element={<NotFound />} />
+            </Routes>
+        </BrowserRouter>
     );
 }

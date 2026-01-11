@@ -1,26 +1,30 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import {
     Box,
     Card,
-    Typography,
     Stack,
-    Paper,
-    ButtonBase
+    Typography,
+    ButtonBase,
+    Paper
 } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { useTheme } from "@mui/material/styles";
 
-const ROLE_DATA = {
-    government: {},
-    citizen: {},
-    organization: {},
-    college: {}
-};
+const ROLES = [
+    { label: "Government", value: "government", route: "/auth/login" },
+    { label: "Individual", value: "individual", route: "/auth/login" },
+    { label: "Organization", value: "organization", route: "/select-organization" },
+    { label: "College", value: "college", route: "/auth/login" }
+];
 
-export default function Landing() {
+const LandingPage = () => {
     const navigate = useNavigate();
+    const theme = useTheme();
 
-    const handleRoleSelect = (role) => {
-        navigate("/code-entry", { state: { role } });
+    const handleRoleClick = (role) => {
+        navigate(role.route, {
+            state: role.value !== "organization" ? { role: role.value } : null
+        });
     };
 
     return (
@@ -30,31 +34,31 @@ export default function Landing() {
             alignItems="center"
             minHeight="95vh"
             px={2}
+            bgcolor="background.default"
         >
             <Card
                 sx={{
                     maxWidth: 680,
                     width: "100%",
                     p: { xs: 3, md: 5 },
-                    borderRadius: 3,
-                    border: "1px solid rgba(15,123,107,0.1)"
+                    borderRadius: "24px",          // ✅ old value
+                    boxShadow: theme.shadows[1]
                 }}
             >
-                {/* Header */}
                 <Stack spacing={3}>
+                    {/* Header */}
                     <Stack direction="row" spacing={2} alignItems="center">
                         <Box
                             sx={{
                                 width: 48,
                                 height: 48,
-                                borderRadius: 2,
-                                background: "linear-gradient(180deg,#e7fff3,#d1fbec)",
+                                borderRadius: "12px",      // ✅ old value
+                                background: theme.custom.gradients.soft,
                                 display: "flex",
                                 alignItems: "center",
                                 justifyContent: "center",
                                 fontSize: 24,
-                                boxShadow: "0 4px 12px rgba(10,60,50,0.08)",
-                                border: "1px solid rgba(16,185,129,0.1)"
+                                boxShadow: theme.shadows[1]
                             }}
                         >
                             🌱
@@ -64,45 +68,49 @@ export default function Landing() {
                             <Typography
                                 fontSize={26}
                                 fontWeight={800}
-                                color="#064e3b"
-                                lineHeight={1.1}
+                                color="text.primary"
                             >
                                 EcoPortal
                             </Typography>
                             <Typography
                                 fontSize={13}
                                 fontWeight={600}
-                                color="#059669"
+                                color="primary.main"
                             >
                                 Track CO₂ savings, leaderboards, rewards & live hotspots
                             </Typography>
                         </Box>
                     </Stack>
 
-                    {/* Role Heading */}
-                    <Typography fontSize={18} fontWeight={700} color="#1f2937">
+                    {/* Heading */}
+                    <Typography
+                        fontSize={18}
+                        fontWeight={700}
+                        color="text.primary"
+                    >
                         Select your role
                     </Typography>
 
                     {/* Roles */}
                     <Stack spacing={1.5}>
-                        {Object.keys(ROLE_DATA).map((role) => (
+                        {ROLES.map((role) => (
                             <Paper
-                                key={role}
+                                key={role.value}
                                 component={ButtonBase}
-                                onClick={() => handleRoleSelect(role)}
+                                onClick={() => handleRoleClick(role)}
                                 sx={{
                                     p: "18px 24px",
-                                    borderRadius: 3,
-                                    backgroundColor: "#eafbf5",
+                                    borderRadius: "20px",     // ✅ old value
+                                    backgroundColor: "background.default",
                                     display: "flex",
                                     justifyContent: "space-between",
                                     alignItems: "center",
+                                    width: "100%",
                                     transition: "all 0.25s ease",
                                     "&:hover": {
                                         transform: "translateY(-3px)",
-                                        backgroundColor: "#d1f7e9",
-                                        boxShadow: "0 12px 24px rgba(15,123,107,0.12)"
+                                        backgroundColor: theme.palette.primary.light,
+                                        boxShadow: theme.shadows[2]
                                     }
                                 }}
                             >
@@ -110,21 +118,25 @@ export default function Landing() {
                                     <Typography
                                         fontSize={17}
                                         fontWeight={800}
-                                        color="#064e3b"
+                                        color="primary.main"
                                     >
-                                        {role.charAt(0).toUpperCase() + role.slice(1)}
+                                        {role.label}
                                     </Typography>
                                     <Typography
                                         fontSize={11}
                                         fontWeight={600}
-                                        color="#0f7b6b"
-                                        sx={{ opacity: 0.8, letterSpacing: 0.5 }}
+                                        color="text.secondary"
+                                        sx={{ letterSpacing: 0.5 }}
                                     >
                                         CLICK TO CONTINUE
                                     </Typography>
                                 </Box>
 
-                                <Typography fontSize={22} fontWeight="bold" color="#059669">
+                                <Typography
+                                    fontSize={22}
+                                    fontWeight="bold"
+                                    color="primary.main"
+                                >
                                     →
                                 </Typography>
                             </Paper>
@@ -134,9 +146,13 @@ export default function Landing() {
                     {/* Tip */}
                     <Typography
                         fontSize={11}
-                        color="#9ca3af"
+                        color="text.secondary"
                         textAlign="center"
-                        sx={{ borderTop: "1px solid #f0fdf4", pt: 2, mt: 2 }}
+                        sx={{
+                            borderTop: `1px solid ${theme.palette.divider}`,
+                            pt: 2,
+                            mt: 2
+                        }}
                     >
                         Tip: Use Government → Analytics → Live Activity Map to see heatmap.
                         Use "Load real dataset" for sample hotspot data.
@@ -145,4 +161,6 @@ export default function Landing() {
             </Card>
         </Box>
     );
-}
+};
+
+export default LandingPage;

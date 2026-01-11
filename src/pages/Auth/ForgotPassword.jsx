@@ -1,0 +1,80 @@
+import { Stack, Typography, Button } from "@mui/material";
+import { Formik } from "formik";
+import { useLocation, useNavigate } from "react-router-dom";
+import AuthLayout from "./AuthLayout";
+import EcoInput from "../../components/common/EcoInput";
+import { forgotPasswordSchemas } from "../../features/auth/passwordResetValidation";
+import { sendResetOtp } from "../../services/authService";
+
+export default function ForgotPassword() {
+    const { state } = useLocation();
+    const navigate = useNavigate();
+
+    const role = state?.role;
+
+    if (!role) {
+        navigate("/");
+        return null;
+    }
+
+    const getFieldConfig = () => {
+        if (role === "individual") {
+            return { name: "aadhar_id", label: "Aadhar ID", placeholder: "12-digit Aadhar" };
+        }
+        if (role === "seller") {
+            return { name: "email", label: "Email", placeholder: "Registered email" };
+        }
+        return { name: "gstin_number", label: "GSTIN", placeholder: "15-character GSTIN" };
+    };
+
+    const field = getFieldConfig();
+    const schema =
+        role === "individual"
+            ? forgotPasswordSchemas.individual
+            : role === "seller"
+                ? forgotPasswordSchemas.seller
+                : forgotPasswordSchemas.organization;
+
+    return (
+        <AuthLayout showBack roleLabel="Reset password">
+            <Formik
+                initialValues={{ [field.name]: "" }}
+                validationSchema={schema}
+                onSubmit={async (values) => {
+                    await sendResetOtp({
+                        user_type: state.role === "individual" ? "individual" : "organization",
+                        organization_type: state.role, 
+                        ...values
+                    });
+                    navigate("/auth/verify-otp", {
+                        state: { role, identifier: values }
+                    });
+                }}
+            >
+                {({ values, errors, touched, handleChange, handleSubmit }) => (
+                    <form onSubmit={handleSubmit}>
+                        <Stack spacing={2}>
+                            <Typography fontSize={22} fontWeight={800}>
+                                Forgot password
+                            </Typography>
+
+                            <EcoInput
+                                name={field.name}
+                                label={field.label}
+                                placeholder={field.placeholder}
+                                value={values[field.name]}
+                                onChange={handleChange}
+                                error={touched[field.name] && Boolean(errors[field.name])}
+                                helperText={touched[field.name] && errors[field.name]}
+                            />
+
+                            <Button type="submit" variant="contained" size="large">
+                                Send OTP
+                            </Button>
+                        </Stack>
+                    </form>
+                )}
+            </Formik>
+        </AuthLayout>
+    );
+}
