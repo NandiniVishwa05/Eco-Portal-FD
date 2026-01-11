@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import { Stack, Typography, Button, Box } from "@mui/material";
 import CreateProductModal from "./tabs/Products/CreateProductModal";
+import QRScannerModal from "./QRScannerModal";
 import { useTheme } from "@mui/material";
 import { logout } from "../../services/authService";
 import { logout as logoutAction } from "../../features/auth/authSlice";
@@ -11,7 +12,9 @@ export default function DashboardHeader({ title }) {
     const { user, userType } = useSelector(state => state.auth);
     const dispatch = useDispatch();
     const [openCreateProduct, setOpenCreateProduct] = useState(false);
+    const [openQRScanner, setOpenQRScanner] = useState(false);
     const theme = useTheme();
+    
     const identifier =
         userType === "government"
             ? user.state_code
@@ -19,15 +22,17 @@ export default function DashboardHeader({ title }) {
                 ? user.aadhar_id
                 : user.email || user.gstin_number;
 
+    const handleQRScanSuccess = (decodedText) => {
+        console.log("QR Code scanned:", decodedText);
+        // Add your logic here - e.g., navigate to product page, show product details, etc.
+        // Example: navigate(`/product/${decodedText}`);
+    };
+
     return (
         <>
             <Stack
-                // direction="row"
-                // justifyContent="space-between"
-                // alignItems="center"
                 sx={{
                     mb: 1.5,
-                    // height: "118px"
                 }}
             >
                 <Stack
@@ -37,7 +42,7 @@ export default function DashboardHeader({ title }) {
                     spacing={0.5}
                 >
                     <Box>
-                        <Typography variant="h5" fontWeight={800} >
+                        <Typography variant="h5" fontWeight={800}>
                             {title}
                         </Typography>
                         <Typography fontSize={13} color="text.secondary">
@@ -55,7 +60,7 @@ export default function DashboardHeader({ title }) {
                                     color: theme.palette.text.primary,
                                     p: "6px 10px"
                                 }}
-                                onClick={() => setOpenCreateProduct(true)}
+                                onClick={() => setOpenQRScanner(true)}
                             >
                                 QR Scan
                             </Button>
@@ -96,7 +101,6 @@ export default function DashboardHeader({ title }) {
                     mt={1.5}
                     direction="row"
                     alignItems="center"
-                    // justifyContent="center"
                     sx={{
                         boxShadow: theme.shadows[0],
                         p: "12px",
@@ -129,13 +133,17 @@ export default function DashboardHeader({ title }) {
                         </Box>
                     </Stack>
                 </Stack>
-
-
-            </Stack >
+            </Stack>
 
             <CreateProductModal
                 open={openCreateProduct}
                 onClose={() => setOpenCreateProduct(false)}
+            />
+
+            <QRScannerModal
+                open={openQRScanner}
+                onClose={() => setOpenQRScanner(false)}
+                onScanSuccess={handleQRScanSuccess}
             />
         </>
     );

@@ -9,6 +9,7 @@ import { useTheme } from "@emotion/react";
 import { Box } from "@mui/material";
 import EcoPointsPieChart from "./EcoPointsCylinder";
 import { useSelector } from "react-redux";
+import EcoPointsGaugeChart from "./EcoPointsGaugeChart";
 
 export default function DashboardShell() {
     const { role } = useParams();
@@ -61,6 +62,11 @@ export default function DashboardShell() {
                                         collected={user.total_ecopoints}
                                         available={user.ecopoints}
                                         used={user.redeemed_ecopoints}
+                                    />
+                                }
+                                 {role === "organization" &&
+                                    <EcoPointsGaugeChart 
+                                        ecoPoints={user.ecopoints || 0}
                                     />
                                 }
                             </Box>

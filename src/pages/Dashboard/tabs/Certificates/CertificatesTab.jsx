@@ -18,6 +18,7 @@ import {
     redeemCertificate,
     getGovernmentAvailableCertificates
 } from "../../../../services/certificateService";
+import PaymentDialog from "../Reports/PaymentDialog";
 
 export default function CertificatesTab() {
     const { userType, user } = useSelector(state => state.auth);
@@ -35,6 +36,10 @@ export default function CertificatesTab() {
     );
     const [rows, setRows] = useState([]);
     const [loading, setLoading] = useState(false);
+
+    /* ================= PAYMENT DIALOG ================= */
+    const [showPaymentDialog, setShowPaymentDialog] = useState(false);
+    const [selectedCertificate, setSelectedCertificate] = useState(null);
 
     /* ================= GOVERNMENT DASHBOARD ================= */
     const [govData, setGovData] = useState(null);
@@ -81,13 +86,27 @@ export default function CertificatesTab() {
     }, [certificateRole]);
 
     /* ================= REDEEM ================= */
-    const handleRedeem = async (id) => {
+    const handleRedeem = async (row) => {
         try {
-            await redeemCertificate(id);
-            setRows(prev => prev.filter(r => r.id !== id));
+            // Store selected certificate for payment dialog
+            setSelectedCertificate(row);
+            
+            // Call API to redeem
+            await redeemCertificate(row.id);
+            
+            // Remove from available list
+            setRows(prev => prev.filter(r => r.id !== row.id));
+            
+            // Show payment success dialog
+            setShowPaymentDialog(true);
         } catch (e) {
             console.error("Redeem failed", e);
         }
+    };
+
+    const handleClosePaymentDialog = () => {
+        setShowPaymentDialog(false);
+        setSelectedCertificate(null);
     };
 
     if (!config) return null;
@@ -121,6 +140,14 @@ export default function CertificatesTab() {
                     rows={rows}
                     loading={loading}
                     emptyMessage="No certificates found."
+                />
+
+                {/* Payment Success Dialog */}
+                <PaymentDialog
+                    open={showPaymentDialog}
+                    onClose={handleClosePaymentDialog}
+                    amount={selectedCertificate?.cost || 0}
+                    title="Redemption Successful!"
                 />
             </Box>
         );

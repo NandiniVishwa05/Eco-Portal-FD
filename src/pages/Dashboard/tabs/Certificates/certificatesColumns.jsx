@@ -24,7 +24,16 @@ export const certificatesColumns = {
                 <Button
                     size="small"
                     variant="contained"
-                    onClick={() => onRedeem(row.id)}
+                    onClick={() => onRedeem(row)}
+                    sx={{
+                        borderRadius: '8px',
+                        textTransform: 'none',
+                        fontWeight: 600,
+                        backgroundColor: 'primary.main',
+                        '&:hover': {
+                            backgroundColor: 'primary.dark'
+                        }
+                    }}
                 >
                     Redeem
                 </Button>

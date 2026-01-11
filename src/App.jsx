@@ -23,6 +23,7 @@ import AnalyticsTab from "./pages/Dashboard/tabs/Analytics/AnalyticsTab";
 import RewardsTab from "./pages/Dashboard/tabs/Rewards/RewardsTab";
 import CertificatesTab from "./pages/Dashboard/tabs/Certificates/CertificatesTab";
 import OverviewTab from "./pages/Dashboard/tabs/Overview/OverviewTab";
+import ReportsTab from "./pages/Dashboard/tabs/Reports/ReportsTab";
 
 // temporary dashboard placeholder
 const Dashboard = () => <h1>Dashboard</h1>;
@@ -115,6 +116,7 @@ export default function App() {
                     <Route path="rewards" element={<RewardsTab />} />
                     <Route path="certificates" element={<CertificatesTab />} />
                     <Route path="overview" element={<OverviewTab />} />
+                    <Route path="reports" element={<ReportsTab />} />
                 </Route>
                 <Route path="*" element={<NotFound />} />
             </Routes>
