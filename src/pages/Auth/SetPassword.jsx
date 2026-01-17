@@ -6,10 +6,14 @@ import AuthLayout from "./AuthLayout";
 import EcoInput from "../../components/common/EcoInput";
 import { setPasswordSchema } from "../../features/auth/passwordResetValidation";
 import { resetPassword } from "../../services/authService";
+import { useState } from "react";
+import FullScreenLoader from "../../components/common/FullScreenLoader";
 
 export default function SetPassword() {
     const { state } = useLocation();
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
+    const [loadingMessage, setLoadingMessage] = useState("");
 
     useEffect(() => {
         console.log(state);
@@ -24,6 +28,10 @@ export default function SetPassword() {
 
     return (
         <AuthLayout showBack roleLabel="Set Password">
+            <FullScreenLoader
+                open={loading}
+                message={loadingMessage}
+            />
             <Formik
                 initialValues={{
                     password: "",
@@ -31,15 +39,24 @@ export default function SetPassword() {
                 }}
                 validationSchema={setPasswordSchema}
                 onSubmit={async (values) => {
-                    await resetPassword({
-                        reset_token: state.reset_token,
-                        newPassword: values.password,
-                        ...state.identifier,
-                        user_type: state.role === "individual" ? "individual" : "organization",
-                        organization_type: state.role,
-                    });
+                    try {
+                        setLoading(true);
+                        setLoadingMessage("Setting password...");
+                        await resetPassword({
+                            reset_token: state.reset_token,
+                            newPassword: values.password,
+                            ...state.identifier,
+                            user_type: state.role === "individual" ? "individual" : "organization",
+                            organization_type: state.role,
+                        });
 
-                    navigate("/");
+                        navigate("/");
+                    } catch (error) {
+                        console.error("Error setting password:", error);
+                    } finally {
+                        setLoading(false);
+                        setLoadingMessage("");
+                    }
                 }}
             >
                 {({ values, errors, touched, handleChange, handleSubmit }) => (

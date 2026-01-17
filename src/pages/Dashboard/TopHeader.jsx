@@ -1,6 +1,6 @@
 import { Box, Typography } from "@mui/material";
 import { useTheme } from "@mui/material";
-
+import img from "../../assets/avani_logo.png";
 export default function TopHeader() {
     const theme = useTheme();
     return (
@@ -39,11 +39,11 @@ export default function TopHeader() {
                         flexShrink: 0,
                     }}
                 >
-                    🌱
+                    <img src={img} alt="AVANI-C" />
                 </Box>
                 <Box>
                     <Typography fontSize={20} sx={{ color: theme.palette.primary.main, lineHeight: 1.2 }} fontWeight={800}>
-                        EcoPortal — Premium
+                        AVANI-C
                     </Typography>
                     <Typography fontSize={13} color="text.secondary">
                         Offline Scanner • Online Maps • Rewards

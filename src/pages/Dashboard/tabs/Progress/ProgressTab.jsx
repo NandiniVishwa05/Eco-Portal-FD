@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Box, Typography, Paper } from "@mui/material";
 import { getProgressData } from "../../../../services/progressService";
 import ProgressChart from "./ProgressChart";
+import InlineLoader from "../../../../components/common/InlineLoader";
 
 export default function ProgressTab() {
     const [data, setData] = useState([]);
@@ -45,7 +46,7 @@ export default function ProgressTab() {
 
             <Paper elevation={0} >
                 {loading ? (
-                    <Typography align="center">Loading progress...</Typography>
+                    <InlineLoader message="Loading Progress..." />
                 ) : data.length === 0 ? (
                     <Typography align="center" color="text.secondary">
                         No progress data available yet.

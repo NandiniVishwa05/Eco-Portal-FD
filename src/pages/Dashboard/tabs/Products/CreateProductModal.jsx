@@ -18,6 +18,8 @@ import * as Yup from "yup";
 import EcoInput from "../../../../components/common/EcoInput";
 import EcoSelect from "../../../../components/common/EcoSelect";
 import { createProduct } from "../../../../services/productService";
+import { useState } from "react";
+import FullScreenLoader from "../../../../components/common/FullScreenLoader";
 
 const IMPACT_OPTIONS = [
     "Paper",
@@ -87,8 +89,13 @@ const Section = ({ title, subtitle, children }) => (
 /* ─────────────────────────── */
 
 export default function CreateProductModal({ open, onClose }) {
+    const [loading, setLoading] = useState(false);
+    const [loadingMessage, setLoadingMessage] = useState("");
+
     const handleSubmit = async (values, { setSubmitting }) => {
         try {
+            setLoading(true);
+            setLoadingMessage("Creating product...");
             const formData = new FormData();
 
             // ───── BASIC FIELDS ─────
@@ -130,12 +137,15 @@ export default function CreateProductModal({ open, onClose }) {
         } catch (err) {
             console.error("Create product failed", err);
         } finally {
+            setLoading(false);
+            setLoadingMessage("");
             setSubmitting(false);
         }
     };
 
     return (
         <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
+            <FullScreenLoader open={loading} message={loadingMessage} />
             <DialogTitle fontWeight={800}>
                 Create Product
             </DialogTitle>

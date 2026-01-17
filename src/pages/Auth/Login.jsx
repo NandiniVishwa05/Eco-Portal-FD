@@ -11,14 +11,17 @@ import AuthLayout from "./AuthLayout";
 import { AUTH_CONFIG } from "../../features/auth/authConfig";
 import EcoInput from "../../components/common/EcoInput";
 import EcoPasswordInput from "../../components/common/EcoPasswordInput";
-import { login } from "../../services/authService";
+import { getUserInfo, login } from "../../services/authService";
 import { loginSuccess } from "../../features/auth/authSlice";
 import { useDispatch } from "react-redux";
+import FullScreenLoader from "../../components/common/FullScreenLoader";
 
 export default function Login() {
     const { state } = useLocation();
     const navigate = useNavigate();
     const theme = useTheme();
+    const [loading, setLoading] = useState(false);
+    const [loadingMessage, setLoadingMessage] = useState("");
     const dispatch = useDispatch();
     const [error, setError] = useState(null);
 
@@ -53,6 +56,10 @@ export default function Login() {
             roleLabel="Government Access"
             roleDescription="Monitor statewide sustainability metrics, live activity maps, and policy-driven impact analytics."
         >
+            <FullScreenLoader
+                open={loading}
+                message={loadingMessage}
+            />
             <Formik
                 initialValues={{
                     identifier: "",
@@ -61,7 +68,8 @@ export default function Login() {
                 onSubmit={async (values) => {
                     try {
                         setError(null);
-
+                        setLoading(true);
+                        setLoadingMessage("Checking credentials...");
                         const response = await login({
                             user_type: userType,
                             ...(userType === "organization" && { organization_type: role }),
@@ -69,11 +77,17 @@ export default function Login() {
                             password: values.password
                         });
 
+                        const res2 = await getUserInfo();
+                        console.log(res2);
+                        console.log("Control came here");
+
                         dispatch(loginSuccess(response));
                         navigate("/dashboard");
 
                     } catch (err) {
                         setError("Invalid credentials");
+                    } finally {
+                        setLoading(false);
                     }
                 }}
             >

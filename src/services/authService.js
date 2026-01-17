@@ -14,15 +14,17 @@ export const signup = async (payload) => {
  */
 export const login = async (payload) => {
     const response = await api.post(AUTH.SIGNIN, payload);
+    console.log("control cont");
+    
     return response.data;
 };
 
 /**
  * Get logged-in user
  */
-export const getMe = async () => {
-    const response = await api.get(AUTH.ME);
-    return response.data;
+export const getUserInfo = async () => {
+    const response = await api.get("/auth/user-info");
+    return response.data.data;
 };
 
 export const sendResetOtp = (payload) =>

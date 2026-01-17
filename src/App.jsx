@@ -23,7 +23,10 @@ import AnalyticsTab from "./pages/Dashboard/tabs/Analytics/AnalyticsTab";
 import RewardsTab from "./pages/Dashboard/tabs/Rewards/RewardsTab";
 import CertificatesTab from "./pages/Dashboard/tabs/Certificates/CertificatesTab";
 import OverviewTab from "./pages/Dashboard/tabs/Overview/OverviewTab";
+import QRScannerPage from "./pages/Scanner/QRScannerPage";
 import ReportsTab from "./pages/Dashboard/tabs/Reports/ReportsTab";
+import ProductDetails from "./pages/ProductDetails/ProductDetails";
+import SettingsPage from "./pages/Dashboard/tabs/Settings/SettingsPage";
 
 // temporary dashboard placeholder
 const Dashboard = () => <h1>Dashboard</h1>;
@@ -99,7 +102,18 @@ export default function App() {
                     }
                 />
 
+                <Route
+                    path="/product-details/:product_id"
+                    element={
+                        <ProductDetails />
+                    }
+                />
                 {/* DASHBOARD PAGES (we’ll fill these next) */}
+                <Route path="/scan/:product_id" element={
+                    <ProtectedRoute>
+                        <QRScannerPage />
+                    </ProtectedRoute>
+                } />
                 <Route
                     path="/dashboard/:role/*"
                     element={
@@ -117,6 +131,7 @@ export default function App() {
                     <Route path="certificates" element={<CertificatesTab />} />
                     <Route path="overview" element={<OverviewTab />} />
                     <Route path="reports" element={<ReportsTab />} />
+                    <Route path="settings" element={<SettingsPage />} />
                 </Route>
                 <Route path="*" element={<NotFound />} />
             </Routes>

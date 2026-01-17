@@ -2,7 +2,13 @@ import { TextField, MenuItem } from "@mui/material";
 
 export default function EcoSelect({ label, options = [], ...props }) {
   return (
-    <TextField select fullWidth label={label} {...props}>
+    <TextField
+      sx={{
+        "& .MuiOutlinedInput-root": {
+          borderRadius: "12px",
+        }
+      }}
+      select fullWidth label={label} {...props}>
       {options.map((opt, index) => {
         // If option is an object
         if (typeof opt === "object" && opt !== null) {

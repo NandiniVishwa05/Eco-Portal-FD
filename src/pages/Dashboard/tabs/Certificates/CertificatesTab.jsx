@@ -75,10 +75,13 @@ export default function CertificatesTab() {
 
         const fetchGov = async () => {
             try {
+                setLoading(true);
                 const data = await getGovernmentAvailableCertificates();
                 setGovData(data);
             } catch (e) {
                 console.error("Failed to fetch government certificates", e);
+            } finally {
+                setLoading(false);
             }
         };
 
@@ -90,13 +93,13 @@ export default function CertificatesTab() {
         try {
             // Store selected certificate for payment dialog
             setSelectedCertificate(row);
-            
+
             // Call API to redeem
             await redeemCertificate(row.id);
-            
+
             // Remove from available list
             setRows(prev => prev.filter(r => r.id !== row.id));
-            
+
             // Show payment success dialog
             setShowPaymentDialog(true);
         } catch (e) {
@@ -171,6 +174,7 @@ export default function CertificatesTab() {
                         <CertificatesRoleSection
                             key={role}
                             role={role}
+                            loading={loading}
                             certificates={govData[role] || []}
                         />
                     ))}

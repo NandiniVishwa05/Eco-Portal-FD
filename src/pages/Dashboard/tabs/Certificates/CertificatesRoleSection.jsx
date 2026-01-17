@@ -3,7 +3,7 @@ import CertificatesTable from "./CertificatesTable";
 import { certificatesColumns } from "./certificatesColumns";
 import { mapAvailableCertificates } from "./certificatesMapper";
 
-export default function CertificatesRoleSection({ role, certificates }) {
+export default function CertificatesRoleSection({ role, certificates, loading }) {
     const rows = mapAvailableCertificates(certificates);
 
     return (
@@ -16,7 +16,7 @@ export default function CertificatesRoleSection({ role, certificates }) {
                 columns={certificatesColumns.government}
                 rows={rows}
                 rowsPerPage={5}
-                loading={false}
+                loading={loading}
                 emptyMessage="No certificates available."
             />
         </>

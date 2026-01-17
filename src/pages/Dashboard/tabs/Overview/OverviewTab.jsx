@@ -2,6 +2,7 @@ import { Box, Typography, Paper } from "@mui/material";
 import { useEffect, useState } from "react";
 import { getOverview } from "../../../../services/activityService";
 import CategoryTrendsChart from "./CategoryTrendsChart";
+import InlineLoader from "../../../../components/common/InlineLoader";
 
 export default function OverviewTab() {
     const [data, setData] = useState([]);
@@ -45,7 +46,7 @@ export default function OverviewTab() {
                 </Typography>
 
                 {loading ? (
-                    <Typography>Loading overview...</Typography>
+                    <InlineLoader message="Loading Overview..." />
                 ) : (
                     <CategoryTrendsChart data={data} />
                 )}

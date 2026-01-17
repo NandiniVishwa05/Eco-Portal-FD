@@ -9,10 +9,13 @@ import {
     Legend
 } from "recharts";
 import { Box, Typography } from "@mui/material";
+import InlineLoader from "../../../../components/common/InlineLoader";
 
 export default function Co2SavedChart({ data = [], loading }) {
     if (loading) {
-        return <Typography>Loading analytics...</Typography>;
+        return (
+            <InlineLoader message="Loading analytics..." />
+        );
     }
 
     if (!data.length) {

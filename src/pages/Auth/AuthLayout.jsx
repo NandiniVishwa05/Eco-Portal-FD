@@ -1,7 +1,7 @@
 import { Box, Stack, Typography, IconButton } from "@mui/material";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import { useNavigate } from "react-router-dom";
-
+import img from "../../assets/avani_logo.png";
 export default function AuthLayout({
     roleLabel,
     roleDescription,
@@ -26,13 +26,16 @@ export default function AuthLayout({
             >
                 <Stack spacing={4} maxWidth={520}>
                     {/* Brand */}
-                    <Typography
-                        fontSize={36}
-                        fontWeight={900}
-                        color="#064e3b"
-                    >
-                        🌱 EcoPortal
-                    </Typography>
+                    <Box display="flex" alignItems="center">
+                        <img src={img} alt="" style={{ width: 95, height: 70 }} />
+                        <Typography
+                            fontSize={36}
+                            fontWeight={900}
+                            color="#064e3b"
+                        >
+                            AVANI-C
+                        </Typography>
+                    </Box>
 
                     {/* Main Statement */}
                     <Typography
@@ -101,7 +104,6 @@ export default function AuthLayout({
                                 <ArrowBackRoundedIcon />
                             </IconButton>
                         )}
-
                         {children}
                     </Stack>
                 </Box>

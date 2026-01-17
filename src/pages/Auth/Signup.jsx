@@ -12,6 +12,7 @@ import { AUTH_CONFIG } from "../../features/auth/authConfig";
 import { signupSchemas } from "../../features/auth/signupValidation";
 import { signupInitialValues } from "../../features/auth/signupInitialValues";
 import { signup } from "../../services/authService";
+import { useState } from "react";
 
 export default function Signup() {
     const { state } = useLocation();
@@ -19,6 +20,8 @@ export default function Signup() {
 
     const role = state?.role;
     const config = AUTH_CONFIG[role];
+    const [loading, setLoading] = useState(false);
+    const [loadingMessage, setLoadingMessage] = useState("");
 
     if (!config || !config.allowSignup) {
         navigate("/");
@@ -44,6 +47,8 @@ export default function Signup() {
                 password: values.password
             };
 
+            setLoading(true);
+            setLoadingMessage("Creating account...");
             await signup(payload);
 
             // success → redirect
@@ -61,6 +66,8 @@ export default function Signup() {
                 setErrors({ email: error.response.data.message });
             }
         } finally {
+            setLoading(false);
+            setLoadingMessage("");
             setSubmitting(false);
         }
     };
@@ -71,6 +78,10 @@ export default function Signup() {
             roleLabel={`${role} account`}
             roleDescription="Create a verified account to access EcoPortal services."
         >
+            <FullScreenLoader
+                open={loading}
+                message={loadingMessage}
+            />
             <Stack spacing={3}>
                 <Typography fontSize={26} fontWeight={800}>
                     Create account

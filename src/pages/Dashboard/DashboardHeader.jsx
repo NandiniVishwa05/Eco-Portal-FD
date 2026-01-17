@@ -7,6 +7,9 @@ import { useTheme } from "@mui/material";
 import { logout } from "../../services/authService";
 import { logout as logoutAction } from "../../features/auth/authSlice";
 import { useDispatch } from "react-redux";
+import { NavLink, useParams } from "react-router-dom";
+import { DASHBOARD_CONFIG } from "./dashboardConfig";
+// import QRScannerModal from "./QRScannerModal";
 
 export default function DashboardHeader({ title }) {
     const { user, userType } = useSelector(state => state.auth);
@@ -14,7 +17,9 @@ export default function DashboardHeader({ title }) {
     const [openCreateProduct, setOpenCreateProduct] = useState(false);
     const [openQRScanner, setOpenQRScanner] = useState(false);
     const theme = useTheme();
-    
+    const { role } = useParams();
+    const config = DASHBOARD_CONFIG[role];
+
     const identifier =
         userType === "government"
             ? user.state_code
@@ -27,6 +32,19 @@ export default function DashboardHeader({ title }) {
         // Add your logic here - e.g., navigate to product page, show product details, etc.
         // Example: navigate(`/product/${decodedText}`);
     };
+
+    function getInitials(name = "") {
+        if (!name) return "";
+
+        return name
+            .trim()
+            .split(/\s+/)          // split by spaces
+            .slice(0, 2)           // take first two words
+            .map(word => word[0])  // take first letter
+            .join("")
+            .toUpperCase();
+    }
+
 
     return (
         <>
@@ -63,6 +81,23 @@ export default function DashboardHeader({ title }) {
                                 onClick={() => setOpenQRScanner(true)}
                             >
                                 QR Scan
+                            </Button>
+                        )}
+                        {userType !== "government" && (
+                            <Button
+                                variant="contained"
+                                component={NavLink}
+                                to={`/dashboard/${role}/settings`}
+                                sx={{
+                                    background: theme.custom.gradients.button,
+                                    borderRadius: "12px",
+                                    border: "1px solid #ebebebff",
+                                    color: theme.palette.text.primary,
+                                    p: "6px 10px"
+                                }}
+                            // onClick={() => setOpenQRScanner(true)}
+                            >
+                                Settings
                             </Button>
                         )}
                         {userType === "organization" && user?.organization_type !== "college" && (
@@ -113,14 +148,19 @@ export default function DashboardHeader({ title }) {
                     <Stack direction="row" spacing={1.5}>
                         <Box
                             sx={{
-                                width: "72px",
-                                height: "72px",
-                                borderRadius: "12px",
-                                overflow: "hidden",
-                                background: theme.custom.gradients.logo
+                                width: 72,
+                                height: 72,
+                                borderRadius: "14px",
+                                background: (theme) => theme.custom.gradients.logo,
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                fontWeight: 700,
+                                fontSize: 22,
+                                color: "primary.main"
                             }}
                         >
-                            <img src="" alt="" />
+                            {getInitials(user?.name)}
                         </Box>
                         <Box>
                             <Typography variant="h6" fontWeight={700}>

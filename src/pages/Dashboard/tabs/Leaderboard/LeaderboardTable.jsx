@@ -9,26 +9,14 @@ import {
     Box
 } from "@mui/material";
 import { useTheme, alpha } from "@mui/material";
+import InlineLoader from "../../../../components/common/InlineLoader";
 
 export default function LeaderboardTable({ data = [], loading }) {
     const theme = useTheme();
 
     if (loading) {
         return (
-            <Paper
-                elevation={0}
-                sx={{
-                    p: 4,
-                    textAlign: "center",
-                    borderRadius: 3,
-                    border: "1px solid",
-                    borderColor: "divider"
-                }}
-            >
-                <Typography fontWeight={600}>
-                    Loading leaderboard…
-                </Typography>
-            </Paper>
+            <InlineLoader message="Loading leaderboard..." />
         );
     }
 

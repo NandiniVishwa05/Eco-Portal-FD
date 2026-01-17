@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import { useTheme, useMediaQuery, alpha } from "@mui/material";
 import { useEffect, useState } from "react";
+import InlineLoader from "../../../../components/common/InlineLoader";
 
 const ROWS_PER_PAGE = 10;
 
@@ -36,20 +37,7 @@ export default function ActivitiesTable({
 
     if (loading) {
         return (
-            <Paper
-                elevation={0}
-                sx={{
-                    p: 4,
-                    textAlign: "center",
-                    borderRadius: 3,
-                    border: "1px solid",
-                    borderColor: "divider"
-                }}
-            >
-                <Typography fontWeight={600}>
-                    Loading activities…
-                </Typography>
-            </Paper>
+            <InlineLoader message="Loading activities..." />
         );
     }
 

@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import { useTheme, useMediaQuery, alpha } from "@mui/material";
 import { useEffect, useState } from "react";
+import InlineLoader from "../../../../components/common/InlineLoader";
 
 const DEFAULT_ROWS = 10;
 
@@ -37,20 +38,7 @@ export default function RewardsTable({
 
     if (loading) {
         return (
-            <Paper
-                elevation={0}
-                sx={{
-                    p: 4,
-                    textAlign: "center",
-                    borderRadius: 3,
-                    border: "1px solid",
-                    borderColor: "divider"
-                }}
-            >
-                <Typography fontWeight={600}>
-                    Loading rewards…
-                </Typography>
-            </Paper>
+            <InlineLoader message="Loading rewards..." />
         );
     }
 

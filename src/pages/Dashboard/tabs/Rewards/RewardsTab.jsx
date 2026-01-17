@@ -7,8 +7,8 @@ import { rewardsColumns } from "./rewardsColumns";
 import RewardsTable from "./RewardsTable";
 import CreateRewardModal from "./CreateRewardModal";
 import GovernmentRewardsSection from "./GovernmentRewardsSection";
-import { updateEcoPoints } from "../../../../features/auth/authSlice";
-
+import { loginSuccess } from "../../../../features/auth/authSlice";
+import { getUserInfo } from "../../../../services/authService";
 import {
     getAvailableRewards,
     getCreatedRewardsByUser,
@@ -47,11 +47,14 @@ export default function RewardsTab() {
         }
     }, [rewardRole]);
 
-    const handleRedeem = async (rewardId,rewardCost) => {
+    const handleRedeem = async (rewardId, rewardCost) => {
         try {
             await redeemReward(rewardId);
+            const userInfo = await getUserInfo();
+            console.log(userInfo);
+            dispatch(loginSuccess(userInfo));
             setRows(prev => prev.filter(r => r.id !== rewardId));
-            dispatch(updateEcoPoints({ rewardCost }));
+            // dispatch(updateEcoPoints({ rewardCost }));
         } catch (err) {
             console.error("Failed to redeem reward", err);
         }
@@ -155,31 +158,37 @@ export default function RewardsTab() {
                 {/* 6 stacked tables */}
                 <Stack spacing={4} sx={{ mt: 3 }}>
                     <GovernmentRewardsSection
+                        loading={loading}
                         title="Individual Rewards"
                         role="individual"
                         rewards={rows}
                     />
                     <GovernmentRewardsSection
+                        loading={loading}
                         title="College Rewards"
                         role="college"
                         rewards={rows}
                     />
                     <GovernmentRewardsSection
+                        loading={loading}
                         title="Manufacturer Rewards"
                         role="manufacturer"
                         rewards={rows}
                     />
                     <GovernmentRewardsSection
+                        loading={loading}
                         title="Retailer Rewards"
                         role="retailer"
                         rewards={rows}
                     />
                     <GovernmentRewardsSection
+                        loading={loading}
                         title="Seller Rewards"
                         role="seller"
                         rewards={rows}
                     />
                     <GovernmentRewardsSection
+                        loading={loading}
                         title="Institution Rewards"
                         role="institution"
                         rewards={rows}

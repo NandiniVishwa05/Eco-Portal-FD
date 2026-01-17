@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
+import img from "../../assets/avani_logo.png";
 
 const ROLES = [
     { label: "Government", value: "government", route: "/auth/login" },
@@ -61,7 +62,7 @@ const LandingPage = () => {
                                 boxShadow: theme.shadows[1]
                             }}
                         >
-                            🌱
+                            <img src={img} alt="AVANI-C" />
                         </Box>
 
                         <Box>
@@ -70,7 +71,7 @@ const LandingPage = () => {
                                 fontWeight={800}
                                 color="text.primary"
                             >
-                                EcoPortal
+                                AVANI-C
                             </Typography>
                             <Typography
                                 fontSize={13}
@@ -109,7 +110,7 @@ const LandingPage = () => {
                                     transition: "all 0.25s ease",
                                     "&:hover": {
                                         transform: "translateY(-3px)",
-                                        backgroundColor: theme.palette.primary.light,
+                                        backgroundColor: theme.palette.hover.main,
                                         boxShadow: theme.shadows[2]
                                     }
                                 }}

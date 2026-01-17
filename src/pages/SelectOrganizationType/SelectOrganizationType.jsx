@@ -93,7 +93,7 @@ const SelectOrganizationType = () => {
                                 borderRadius: "12px",
                                 bgcolor: "background.default",
                                 "&:hover": {
-                                    bgcolor: theme.palette.primary.light
+                                    bgcolor: theme.palette.hover.main
                                 }
                             }}
                         >
@@ -132,7 +132,7 @@ const SelectOrganizationType = () => {
                                     transition: "all 0.25s ease",
                                     "&:hover": {
                                         transform: "translateY(-3px)",
-                                        backgroundColor: theme.palette.primary.light,
+                                        backgroundColor: theme.palette.hover.main,
                                         boxShadow: theme.shadows[2]
                                     }
                                 }}

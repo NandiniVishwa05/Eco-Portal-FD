@@ -13,6 +13,7 @@ const VISIBILITY_MAP = {
 };
 
 export default function GovernmentRewardsSection({
+    loading,
     title,
     role,
     rewards
@@ -32,7 +33,7 @@ export default function GovernmentRewardsSection({
             <RewardsTable
                 columns={rewardsColumns.platform}
                 rows={rows}
-                loading={false}
+                loading={loading}
                 emptyMessage={`No rewards available for ${title}`}
                 rowsPerPage={5}
             />

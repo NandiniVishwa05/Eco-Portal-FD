@@ -5,10 +5,14 @@ import AuthLayout from "./AuthLayout";
 import EcoInput from "../../components/common/EcoInput";
 import { forgotPasswordSchemas } from "../../features/auth/passwordResetValidation";
 import { sendResetOtp } from "../../services/authService";
+import { useState } from "react";
+import FullScreenLoader from "../../components/common/FullScreenLoader";
 
 export default function ForgotPassword() {
     const { state } = useLocation();
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
+    const [loadingMessage, setLoadingMessage] = useState(true);
 
     const role = state?.role;
 
@@ -37,18 +41,30 @@ export default function ForgotPassword() {
 
     return (
         <AuthLayout showBack roleLabel="Reset password">
+            <FullScreenLoader
+                open={loading}
+                message={loadingMessage}
+            />
             <Formik
                 initialValues={{ [field.name]: "" }}
                 validationSchema={schema}
                 onSubmit={async (values) => {
-                    await sendResetOtp({
-                        user_type: state.role === "individual" ? "individual" : "organization",
-                        organization_type: state.role, 
-                        ...values
-                    });
-                    navigate("/auth/verify-otp", {
-                        state: { role, identifier: values }
-                    });
+                    try {
+                        setLoading(true);
+                        setLoadingMessage("Sending otp...");
+                        await sendResetOtp({
+                            user_type: state.role === "individual" ? "individual" : "organization",
+                            organization_type: state.role,
+                            ...values
+                        });
+                        navigate("/auth/verify-otp", {
+                            state: { role, identifier: values }
+                        });
+                    } catch (error) {
+                        console.error("Error sending reset OTP:", error);
+                    } finally {
+                        setLoading(false);
+                    }
                 }}
             >
                 {({ values, errors, touched, handleChange, handleSubmit }) => (

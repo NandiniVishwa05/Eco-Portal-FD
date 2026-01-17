@@ -6,18 +6,29 @@ import {
     fetchNearbyOrganizations
 } from "../../../../services/mapService";
 import HeatmapResultsTable from "./HeatmapResultsTable";
+import InlineLoader from "../../../../components/common/InlineLoader";
 
 export default function HeatmapTab() {
     const [heatPoints, setHeatPoints] = useState([]);
     const [nearbyOrgs, setNearbyOrgs] = useState([]);
     const [loadingOrgs, setLoadingOrgs] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [loadingMessage, setLoadingMessage] = useState("");
 
     useEffect(() => {
         const loadHeatmap = async () => {
-            const data = await fetchHeatmapPoints();
-            setHeatPoints(
-                data.map(item => [item.lat, item.lng, item.weight || 1])
-            );
+            try {
+                setLoading(true);
+                setLoadingMessage("Loading heatmap data...");
+                const data = await fetchHeatmapPoints();
+                setHeatPoints(
+                    data.map(item => [item.lat, item.lng, item.weight || 1])
+                );
+            } catch (error) {
+                console.error("Failed to load heatmap data:", error);
+            } finally {
+                setLoading(false);
+            }
         };
         loadHeatmap();
     }, []);
@@ -42,51 +53,54 @@ export default function HeatmapTab() {
                     Explore eco-impact hotspots and nearby high-performing organizations.
                 </Typography>
             </Box>
-
-            <Box
-                sx={{
-                    display: "grid",
-                    gridTemplateColumns: {
-                        xs: "1fr",
-                        md: "1.6fr 1fr"
-                    },
-                    gap: 2
-                }}
-            >
-                {/* MAP */}
-                <Paper
+            {loading ?
+                <InlineLoader message={loadingMessage} />
+                :
+                <Box
                     sx={{
-                        height: {
-                            xs: 320,
-                            sm: 360,
-                            md: 420,
-                            lg: 450
-                        }
+                        display: "grid",
+                        gridTemplateColumns: {
+                            xs: "1fr",
+                            md: "1.6fr 1fr"
+                        },
+                        gap: 2
                     }}
                 >
-                    <HeatMapMap
-                        points={heatPoints}
-                        onSelectLocation={handleSelectLocation}
-                    />
-                </Paper>
+                    {/* MAP */}
+                    <Paper
+                        sx={{
+                            height: {
+                                xs: 320,
+                                sm: 360,
+                                md: 420,
+                                lg: 450
+                            }
+                        }}
+                    >
+                        <HeatMapMap
+                            points={heatPoints}
+                            onSelectLocation={handleSelectLocation}
+                        />
+                    </Paper>
 
-                {/* RESULTS */}
-                <Paper
-                    elevation={0}
-                    sx={{
-                        height: {
-                            xs: "auto",
-                            md: 420,
-                            lg: 450
-                        }
-                    }}
-                >
-                    <HeatmapResultsTable
-                        data={nearbyOrgs}
-                        loading={loadingOrgs}
-                    />
-                </Paper>
-            </Box>
+                    {/* RESULTS */}
+                    <Paper
+                        elevation={0}
+                        sx={{
+                            height: {
+                                xs: "auto",
+                                md: 420,
+                                lg: 450
+                            }
+                        }}
+                    >
+                        <HeatmapResultsTable
+                            data={nearbyOrgs}
+                            loading={loadingOrgs}
+                        />
+                    </Paper>
+                </Box>
+            }
         </Box>
     );
 }

@@ -12,14 +12,21 @@ import EcoInput from "../../../../components/common/EcoInput";
 import { createRewardSchema } from "./createRewardSchema";
 import { createRewardInitialValues } from "./createRewardInitial";
 import { createReward } from "../../../../services/rewardService";
+import FullScreenLoader from "../../../../components/common/FullScreenLoader";
+import { useState } from "react";
 
 export default function CreateRewardModal({
     open,
     onClose,
     onSuccess
 }) {
+
+    const [loading, setLoading] = useState(false);
+    const [loadingMessage, setLoadingMessage] = useState("");
     const handleSubmit = async (values, { setSubmitting, setErrors }) => {
         try {
+            setLoading(true);
+            setLoadingMessage("Creating reward...");
             await createReward(values);
             onSuccess();      // refresh table
             onClose();        // close modal
@@ -28,12 +35,15 @@ export default function CreateRewardModal({
                 setErrors(error.response.data.errors);
             }
         } finally {
+            setLoading(false);
+            setLoadingMessage("");
             setSubmitting(false);
         }
     };
 
     return (
         <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+            <FullScreenLoader open={loading} message={loadingMessage} />
             <DialogTitle>Create Reward</DialogTitle>
 
             <DialogContent>

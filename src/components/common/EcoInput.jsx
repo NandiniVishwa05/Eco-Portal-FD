@@ -16,6 +16,9 @@ export default function EcoInput({
             value={value}
             placeholder={placeholder}
             type={type}
+            inputProps={{
+                ...(type === "number" && { step: "any" })
+            }}
             error={error}
             helperText={helperText}
             InputLabelProps={{

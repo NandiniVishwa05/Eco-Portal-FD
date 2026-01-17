@@ -28,7 +28,7 @@ export default function DashboardShell() {
             <div
                 style={{
                     background: theme.custom.gradients.soft,
-                    minHeight: "100vh",
+                    // minHeight: "100vh",
                     paddingBottom: 40
                 }}
             >
@@ -64,8 +64,8 @@ export default function DashboardShell() {
                                         used={user.redeemed_ecopoints}
                                     />
                                 }
-                                 {role === "organization" &&
-                                    <EcoPointsGaugeChart 
+                                {role === "organization" &&
+                                    <EcoPointsGaugeChart
                                         ecoPoints={user.ecopoints || 0}
                                     />
                                 }
