@@ -12,10 +12,12 @@ import {
     ResponsiveContainer,
     Cell,
 } from 'recharts';
+import logo from "../../assets/avani_logo.png";
 import { CheckCircle2, XCircle, BookOpen, QrCode, ArrowRight, ExternalLink } from 'lucide-react';
 import img from "./bag.jpg"
 import { useParams } from 'react-router-dom';
 import { getProductById, getRecommendedProducts } from '../../services/productService';
+import { Box } from "@mui/material";
 
 function ProductDetails() {
     const { product_id } = useParams();
@@ -60,11 +62,29 @@ function ProductDetails() {
             <div className="min-h-screen flex flex-col font-sans text-slate-800 bg-gradient-to-br from-eco-100 via-sky-50 to-eco-50 selection:bg-eco-200">
                 {/* Header */}
                 <header className="bg-white/70 backdrop-blur-xl text-eco-900 shadow-lg shadow-eco-100/20 sticky top-0 z-50 border-b border-white/50 transition-all duration-300">
-                    <div className="max-w-6xl mx-auto px-4 py-4 md:py-5">
-                        <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+                    <div className="max-w-7xl mx-auto px-4 py-4 md:py-5">
+                        <div className="flex flex-col md:flex-row justify-start items-center gap-4">
+                            <div>
+                                <Box
+                                    sx={{
+                                        width: "100px",
+                                        height: "80px",
+                                        borderRadius: "14px",
+                                        background: "linear-gradient(180deg,#e7fff3,#d1fbec)",
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                        fontSize: "26px",
+                                        boxShadow: "0 12px 30px rgba(10,60,50,0.06)",
+                                        flexShrink: 0,
+                                    }}
+                                >
+                                    <img src={logo} alt="AVANI-C" />
+                                </Box>
+                            </div>
                             <div className="text-center md:text-left group cursor-pointer">
                                 <h1 className="text-2xl md:text-4xl font-extrabold tracking-tight bg-gradient-to-r from-eco-700 via-eco-600 to-sky-600 bg-clip-text text-transparent drop-shadow-sm group-hover:scale-[1.01] transition-transform">
-                                    Avani-C LCA Tracker
+                                    AVANI-C LCA Tracker
                                 </h1>
                                 <p className="text-eco-700/80 text-xs md:text-sm mt-1 font-medium tracking-wide flex items-center justify-center md:justify-start gap-2">
                                     {/* <Sparkles className="w-3 h-3 text-solar-500 animate-pulse" /> */}

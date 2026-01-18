@@ -18,7 +18,7 @@ export default function TopHeader() {
                     maxWidth: 1165,
                     borderRadius: "12px",
                     mx: "auto",
-                    px: "20px",
+                    px: "10px",
                     py: "10px",
                     display: "flex",
                     alignItems: "center",
@@ -27,8 +27,8 @@ export default function TopHeader() {
             >
                 <Box
                     sx={{
-                        width: "64px",
-                        height: "64px",
+                        width: "100px",
+                        height: "70px",
                         borderRadius: "14px",
                         background: "linear-gradient(180deg,#e7fff3,#d1fbec)",
                         display: "flex",
@@ -41,7 +41,12 @@ export default function TopHeader() {
                 >
                     <img src={img} alt="AVANI-C" />
                 </Box>
-                <Box>
+                <Box 
+                sx={{display:"flex-start",
+                    flexDirection:"column",
+                    alignItems:"center"
+
+                }}>
                     <Typography fontSize={20} sx={{ color: theme.palette.primary.main, lineHeight: 1.2 }} fontWeight={800}>
                         AVANI-C
                     </Typography>

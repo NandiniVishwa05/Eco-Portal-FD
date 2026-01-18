@@ -24,7 +24,7 @@ export const GOVERNMENT_COLUMNS = [
     { key: "category", label: "Category", render: renderCategory },
     { key: "seller", label: "Seller" },
     { key: "ecopoints", label: "EcoPoints", render: COMMON_RENDERERS.ecopoints },
-    { key: "co2", label: "CO₂ Saved", render: COMMON_RENDERERS.co2 },
+    { key: "co2", label: "CO₂ Emission", render: COMMON_RENDERERS.co2 },
     { key: "date", label: "Date" }
 ];
 
@@ -34,7 +34,7 @@ export const INDIVIDUAL_COLUMNS = [
     { key: "category", label: "Category", render: renderCategory },
     { key: "seller", label: "Seller" },
     { key: "ecopoints", label: "EcoPoints", render: COMMON_RENDERERS.ecopoints },
-    { key: "co2", label: "CO₂ Saved", render: COMMON_RENDERERS.co2 },
+    { key: "co2", label: "CO₂ Emission", render: COMMON_RENDERERS.co2 },
     { key: "date", label: "Date" }
 ];
 
@@ -44,6 +44,6 @@ export const SELLING_COLUMNS = [
     { key: "category", label: "Category", render: renderCategory },
     { key: "buyer", label: "Buyer" },
     { key: "ecopoints", label: "EcoPoints", render: COMMON_RENDERERS.ecopoints },
-    { key: "co2", label: "CO₂ Saved", render: COMMON_RENDERERS.co2 },
+    { key: "co2", label: "CO₂ Emission", render: COMMON_RENDERERS.co2 },
     { key: "date", label: "Date" }
 ];

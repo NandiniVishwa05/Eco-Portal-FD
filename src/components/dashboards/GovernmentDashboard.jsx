@@ -80,7 +80,7 @@ export default function GovernmentDashboard() {
 
                 <div className="metrics">
                     <div className="metric">
-                        <div className="label">Total CO₂ Saved</div>
+                        <div className="label">Total CO₂ Emission</div>
                         <div className="value">12,480 kg</div>
                     </div>
                     <div className="metric">

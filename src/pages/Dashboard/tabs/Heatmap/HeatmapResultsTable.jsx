@@ -120,7 +120,7 @@ export default function HeatmapResultsTable({ data = [], loading }) {
                                 justifyContent="space-between"
                                 sx={{ mt: 1.5 }}
                             >
-                                <Metric label="CO₂ Saved" value={`${row.co2_savings} kg`} />
+                                <Metric label="CO₂ Emission" value={`${row.co2_savings} kg`} />
                                 <Metric label="EcoPoints" value={row.ecopoints} />
                                 <Metric label="Distance" value={`${row.distance_in_km} km`} />
                             </Stack>
@@ -140,7 +140,7 @@ export default function HeatmapResultsTable({ data = [], loading }) {
                     <Table stickyHeader size="small">
                         <TableHead>
                             <TableRow>
-                                {["#", "Organization", "CO₂ Saved", "EcoPoints", "Distance"].map(
+                                {["#", "Organization", "CO₂ Emission", "EcoPoints", "Distance"].map(
                                     (h) => (
                                         <TableCell
                                             key={h}

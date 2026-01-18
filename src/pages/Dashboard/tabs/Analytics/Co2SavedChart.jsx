@@ -48,7 +48,7 @@ export default function Co2SavedChart({ data = [], loading }) {
                     <Area
                         type="monotone"
                         dataKey="value"
-                        name="CO₂ Saved (kg)"
+                        name="CO₂ Emission (kg)"
                         stroke="#0f766e"
                         fill="#99f6e4"
                         strokeWidth={2}

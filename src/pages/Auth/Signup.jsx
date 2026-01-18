@@ -13,7 +13,7 @@ import { signupSchemas } from "../../features/auth/signupValidation";
 import { signupInitialValues } from "../../features/auth/signupInitialValues";
 import { signup } from "../../services/authService";
 import { useState } from "react";
-
+import FullScreenLoader from "../../components/common/FullScreenLoader"
 export default function Signup() {
     const { state } = useLocation();
     const navigate = useNavigate();

@@ -239,7 +239,7 @@ export default function SettingsPage() {
                     description="Customize how EcoPortal looks."
                 >
                     <Stack spacing={2}>
-                        <EcoSelect
+                        {/* <EcoSelect
                             label="Theme mode"
                             value={mode}
                             onChange={(e) => dispatch(setThemeMode(e.target.value))}
@@ -248,7 +248,7 @@ export default function SettingsPage() {
                                 { label: "Dark", value: "dark" },
                                 { label: "System default", value: "system" }
                             ]}
-                        />
+                        /> */}
 
                         <EcoSelect
                             label="Data visualization density"

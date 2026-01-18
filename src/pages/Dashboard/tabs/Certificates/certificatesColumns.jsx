@@ -6,7 +6,7 @@ export const COMMON_COLUMNS = {
     cost: { key: "cost", label: "Cost" },
     description: { key: "description", label: "Description" },
     usage: { key: "usage", label: "Usage" },
-    co2: { key: "co2", label: "CO₂ Savings Cap" }
+    co2: { key: "co2", label: "CO₂ Emission Cap" }
 };
 
 export const certificatesColumns = {

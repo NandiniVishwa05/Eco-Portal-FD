@@ -10,6 +10,7 @@ import { Box } from "@mui/material";
 import EcoPointsPieChart from "./EcoPointsCylinder";
 import { useSelector } from "react-redux";
 import EcoPointsGaugeChart from "./EcoPointsGaugeChart";
+import EcoPointsCylinder from "../../components/EcoPointsCylinder";
 
 export default function DashboardShell() {
     const { role } = useParams();
@@ -58,11 +59,27 @@ export default function DashboardShell() {
                             <Box>
                                 {/* Graph code should be here */}
                                 {role === "individual" &&
-                                    <EcoPointsPieChart
-                                        collected={user.total_ecopoints}
-                                        available={user.ecopoints}
-                                        used={user.redeemed_ecopoints}
-                                    />
+                                    <Box sx={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        gap:5
+
+                                    }}>
+                                        {/* <EcoPointsPieChart
+                                            collected={user.total_ecopoints}
+                                            available={user.ecopoints}
+                                            used={user.redeemed_ecopoints}
+                                        /> */}
+                                        <EcoPointsGaugeChart
+                                            ecoPoints={user.ecopoints || 0}
+                                        />
+                                        <EcoPointsCylinder
+                                            // collected={user.total_ecopoints}
+                                            available={user.ecopoints}
+                                            used={user.redeemed_ecopoints}
+                                        />
+                                    </Box>
+
                                 }
                                 {role === "organization" &&
                                     <EcoPointsGaugeChart

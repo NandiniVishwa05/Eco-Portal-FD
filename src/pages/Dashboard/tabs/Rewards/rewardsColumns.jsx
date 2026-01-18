@@ -8,7 +8,7 @@ export const COMMON_COLUMNS = {
     name: { key: "name", label: "Name" },
     creator: { key: "creator", label: "Created By" },
     ecopoints: { key: "ecopoints", label: "Ecopoints Cap" },
-    co2: { key: "co2", label: "CO₂ Saved" },
+    co2: { key: "co2", label: "CO₂ Emission" },
     type: { key: "type", label: "Monetary / Non Monetary" },
     description: { key: "description", label: "Benefit Description" },
     quantity: { key: "quantity", label: "Quantity" },

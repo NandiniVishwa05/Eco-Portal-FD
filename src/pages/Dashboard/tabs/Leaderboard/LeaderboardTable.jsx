@@ -62,7 +62,7 @@ export default function LeaderboardTable({ data = [], loading }) {
                                 "Name",
                                 "Category",
                                 "EcoPoints",
-                                "CO₂ Saved"
+                                "CO₂ Emission"
                             ].map(label => (
                                 <TableCell
                                     key={label}

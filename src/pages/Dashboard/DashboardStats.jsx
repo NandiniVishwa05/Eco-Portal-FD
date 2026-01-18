@@ -34,7 +34,7 @@ export default function DashboardStats({ stats }) {
         >
             {stats.includes("co2") && (
                 <StatCard
-                    label="Total CO₂ Saved"
+                    label="Total CO₂ Emission"
                     value={`${user?.co2_savings ?? 0} kg`}
                 />
             )}

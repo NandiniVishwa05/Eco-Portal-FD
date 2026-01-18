@@ -196,7 +196,7 @@ export default function CreateProductModal({ open, onClose }) {
                                     <Stack direction="row" spacing={2}>
                                         <EcoInput
                                             name="co2_savings"
-                                            label="CO₂ Savings (kg)"
+                                            label="CO₂ Emission (kg)"
                                             type="number"
                                             onChange={handleChange}
                                         />

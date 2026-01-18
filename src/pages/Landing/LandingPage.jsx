@@ -15,7 +15,7 @@ const ROLES = [
     { label: "Government", value: "government", route: "/auth/login" },
     { label: "Individual", value: "individual", route: "/auth/login" },
     { label: "Organization", value: "organization", route: "/select-organization" },
-    { label: "College", value: "college", route: "/auth/login" }
+    // { label: "College", value: "college", route: "/auth/login" }
 ];
 
 const LandingPage = () => {
