@@ -16,7 +16,7 @@ function LCATracker({ data }) {
 
                 <img
                     // src={selectedProduct.image}
-                    src={`http://localhost:5000${data?.image}` || null}
+                    src={`${import.meta.env.VITE_BACKEND_API_URL}${data?.image}` || null}
                     alt={data?.name}
                     className="max-w-md shadow-lg"
                 />
