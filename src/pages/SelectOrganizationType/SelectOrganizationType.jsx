@@ -11,12 +11,24 @@ import {
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
+import img from "../../assets/avani_logo.png";
 
 const ORG_TYPES = [
-    { label: "Manufacturer", value: "manufacturer" },
-    { label: "Retailer", value: "retailer" },
-    { label: "Seller", value: "seller" },
-    { label: "Institution", value: "institution" }
+    {
+        label: "Manufacturer",
+        value: "manufacturer",
+        helper: "You manufacture your own products"
+    },
+    {
+        label: "Retailer",
+        value: "retailer",
+        helper: "You sell products manufactured by others"
+    },
+    {
+        label: "Other",
+        value: "seller",
+        helper: "Institutions, enterprises, IT companies, etc."
+    }
 ];
 
 const SelectOrganizationType = () => {
@@ -52,9 +64,9 @@ const SelectOrganizationType = () => {
                     >
                         <Box
                             sx={{
-                                width: 48,
-                                height: 48,
-                                borderRadius: "12px",
+                                width: 69,
+                                height: 54,
+                                borderRadius: "12px",      // ✅ old value
                                 background: theme.custom.gradients.soft,
                                 display: "flex",
                                 alignItems: "center",
@@ -63,7 +75,7 @@ const SelectOrganizationType = () => {
                                 boxShadow: theme.shadows[1]
                             }}
                         >
-                            🌱
+                            <img src={img} alt="AVANI-C" />
                         </Box>
 
                         <Box>
@@ -72,7 +84,7 @@ const SelectOrganizationType = () => {
                                 fontWeight={800}
                                 color="text.primary"
                             >
-                                EcoPortal
+                                AVANI-C
                             </Typography>
                             <Typography
                                 fontSize={13}
@@ -102,17 +114,28 @@ const SelectOrganizationType = () => {
                     </Stack>
 
                     {/* Heading */}
-                    <Typography
-                        fontSize={18}
-                        fontWeight={700}
-                        color="text.primary"
-                    >
-                        Select your organization type
-                    </Typography>
+                    <Box>
+
+                        <Typography
+                            fontSize={18}
+                            fontWeight={700}
+                            color="text.primary"
+                        >
+                            Select your organization type
+                        </Typography>
+
+                        <Typography
+                            fontSize={12}
+                            color="text.secondary"
+                        >
+                            Choose the option that best describes your role. This helps us personalize
+                            dashboards, eco-points, and CO₂ impact calculations for your account.
+                        </Typography>
+                    </Box>
 
                     {/* Organization Options */}
                     <Stack spacing={1.5}>
-                        {ORG_TYPES.map(({ label, value }) => (
+                        {ORG_TYPES.map(({ label, value, helper }) => (
                             <Paper
                                 key={value}
                                 component={ButtonBase}
@@ -145,13 +168,13 @@ const SelectOrganizationType = () => {
                                     >
                                         {label}
                                     </Typography>
+
                                     <Typography
-                                        fontSize={11}
-                                        fontWeight={600}
+                                        fontSize={12}
                                         color="text.secondary"
-                                        sx={{ letterSpacing: 0.5 }}
+                                    // sx={{ mt: 0.3 }}
                                     >
-                                        CLICK TO CONTINUE
+                                        {helper}
                                     </Typography>
                                 </Box>
 

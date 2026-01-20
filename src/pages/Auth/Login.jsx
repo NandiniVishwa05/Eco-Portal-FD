@@ -15,6 +15,7 @@ import { getUserInfo, login } from "../../services/authService";
 import { loginSuccess } from "../../features/auth/authSlice";
 import { useDispatch } from "react-redux";
 import FullScreenLoader from "../../components/common/FullScreenLoader";
+import EcoAlert from "../../components/common/EcoAlertDialog";
 
 export default function Login() {
     const { state } = useLocation();
@@ -24,6 +25,11 @@ export default function Login() {
     const [loadingMessage, setLoadingMessage] = useState("");
     const dispatch = useDispatch();
     const [error, setError] = useState(null);
+    const [alert, setAlert] = useState({
+        open: false,
+        type: "success",
+        message: ""
+    });
 
     const role = state?.role;
     const config = AUTH_CONFIG[role];
@@ -51,135 +57,154 @@ export default function Login() {
     const identifierKey = resolveIdentifierKey(role);
 
     return (
-        <AuthLayout
-            showBack
-            roleLabel="Government Access"
-            roleDescription="Monitor statewide sustainability metrics, live activity maps, and policy-driven impact analytics."
-        >
-            <FullScreenLoader
-                open={loading}
-                message={loadingMessage}
+        <>
+            <EcoAlert
+                open={alert.open}
+                type={alert.type}
+                message={alert.message}
+                onClose={() => setAlert({ ...alert, open: false })}
             />
-            <Formik
-                initialValues={{
-                    identifier: "",
-                    password: ""
-                }}
-                onSubmit={async (values) => {
-                    try {
-                        setError(null);
-                        setLoading(true);
-                        setLoadingMessage("Checking credentials...");
-                        const response = await login({
-                            user_type: userType,
-                            ...(userType === "organization" && { organization_type: role }),
-                            [identifierKey]: values.identifier,
-                            password: values.password
-                        });
-
-                        const res2 = await getUserInfo();
-                        console.log(res2);
-                        console.log("Control came here");
-
-                        dispatch(loginSuccess(response));
-                        navigate("/dashboard");
-
-                    } catch (err) {
-                        setError("Invalid credentials");
-                    } finally {
-                        setLoading(false);
-                    }
-                }}
+            <AuthLayout
+                showBack
+                roleLabel="Government Access"
+                roleDescription="Monitor statewide sustainability metrics, live activity maps, and policy-driven impact analytics."
             >
-                {({
-                    values,
-                    handleChange,
-                    handleSubmit
-                }) => (
-                    <form onSubmit={handleSubmit}>
-                        <Stack spacing={3}>
-                            {/* Title */}
-                            <Typography
-                                fontSize={26}
-                                fontWeight={800}
-                                color="text.primary"
-                            >
-                                Sign in
-                            </Typography>
 
-                            {/* Form */}
-                            <Stack spacing={2}>
-                                <EcoInput
-                                    name="identifier"
-                                    label={config.identifierLabel}
-                                    placeholder="Enter your registered ID"
-                                    value={values.identifier}
-                                    onChange={handleChange}
-                                    error={Boolean(error)}
-                                    helperText={error}
-                                />
+                <FullScreenLoader
+                    open={loading}
+                    message={loadingMessage}
+                />
+                <Formik
+                    initialValues={{
+                        identifier: "",
+                        password: ""
+                    }}
+                    onSubmit={async (values) => {
+                        try {
+                            setError(null);
+                            setLoading(true);
+                            setLoadingMessage("Checking credentials...");
+                            const response = await login({
+                                user_type: userType,
+                                ...(userType === "organization" && { organization_type: role }),
+                                [identifierKey]: values.identifier,
+                                password: values.password
+                            });
 
-                                <EcoPasswordInput
-                                    name="password"
-                                    placeholder="Enter your password"
-                                    value={values.password}
-                                    onChange={handleChange}
-                                    error={Boolean(error)}
-                                />
-                            </Stack>
+                            const res2 = await getUserInfo();
+                            console.log(res2);
+                            console.log("Control came here");
 
-                            {/* CTA */}
-                            <Button
-                                type="submit"
-                                variant="contained"
-                                size="large"
-                                sx={{
-                                    py: 1.4,
-                                    fontWeight: 700,
-                                    borderRadius: "12px"
-                                }}
-                            >
-                                Continue
-                            </Button>
+                            dispatch(loginSuccess(response));
+                            navigate("/dashboard");
 
-                            {/* Forgot password */}
-                            <Typography
-                                fontSize={13}
-                                color="primary.main"
-                                sx={{ cursor: "pointer" }}
-                                onClick={() =>
-                                    navigate("/auth/forgot-password", {
-                                        state: { role }
-                                    })
-                                }
-                            >
-                                Forgot password?
-                            </Typography>
+                        } catch (err) {
+                            const backendMessage =
+                                err?.response?.data?.error ||
+                                err?.response?.data?.message ||
+                                "Something went wrong. Please try again.";
 
-                            {/* Signup */}
-                            {config.allowSignup && (
-                                <Typography fontSize={13} color="text.secondary">
-                                    New here?{" "}
-                                    <span
-                                        style={{
-                                            color: theme.palette.primary.main,
-                                            fontWeight: 700,
-                                            cursor: "pointer"
-                                        }}
-                                        onClick={() =>
-                                            navigate("/auth/signup", {
-                                                state: { role }
-                                            })
-                                        }
-                                    >
-                                        Create an account
-                                    </span>
+                            setAlert({
+                                open: true,
+                                type: "error",
+                                message: backendMessage
+                            });
+                            setError("Invalid credentials");
+                        } finally {
+                            setLoading(false);
+                        }
+                    }}
+                >
+                    {({
+                        values,
+                        handleChange,
+                        handleSubmit
+                    }) => (
+                        <form onSubmit={handleSubmit}>
+                            <Stack spacing={3}>
+                                {/* Title */}
+                                <Typography
+                                    fontSize={26}
+                                    fontWeight={800}
+                                    color="text.primary"
+                                >
+                                    Sign in
                                 </Typography>
-                            )}
-                        </Stack>
-                    </form>
-                )}
-            </Formik>
-        </AuthLayout>
+
+                                {/* Form */}
+                                <Stack spacing={2}>
+                                    <EcoInput
+                                        name="identifier"
+                                        label={config.identifierLabel}
+                                        placeholder="Enter your registered ID"
+                                        value={values.identifier}
+                                        onChange={handleChange}
+                                        error={Boolean(error)}
+                                        helperText={error}
+                                    />
+
+                                    <EcoPasswordInput
+                                        name="password"
+                                        placeholder="Enter your password"
+                                        value={values.password}
+                                        onChange={handleChange}
+                                        error={Boolean(error)}
+                                    />
+                                </Stack>
+
+                                {/* CTA */}
+                                <Button
+                                    type="submit"
+                                    variant="contained"
+                                    size="large"
+                                    sx={{
+                                        py: 1.4,
+                                        fontWeight: 700,
+                                        borderRadius: "12px"
+                                    }}
+                                >
+                                    Continue
+                                </Button>
+
+                                {/* Forgot password */}
+                                <Typography
+                                    fontSize={13}
+                                    color="primary.main"
+                                    sx={{ cursor: "pointer" }}
+                                    onClick={() =>
+                                        navigate("/auth/forgot-password", {
+                                            state: { role }
+                                        })
+                                    }
+                                >
+                                    Forgot password?
+                                </Typography>
+
+                                {/* Signup */}
+                                {config.allowSignup && (
+                                    <Typography fontSize={13} color="text.secondary">
+                                        New here?{" "}
+                                        <span
+                                            style={{
+                                                color: theme.palette.primary.main,
+                                                fontWeight: 700,
+                                                cursor: "pointer"
+                                            }}
+                                            onClick={() =>
+                                                navigate("/auth/signup", {
+                                                    state: { role }
+                                                })
+                                            }
+                                        >
+                                            Create an account
+                                        </span>
+                                    </Typography>
+                                )}
+                            </Stack>
+                        </form>
+                    )}
+                </Formik>
+            </AuthLayout>
+        </>
     );
 }

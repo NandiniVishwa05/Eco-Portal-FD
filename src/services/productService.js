@@ -15,3 +15,9 @@ export const getProductById = (id) =>
 
 export const getRecommendedProducts = (id) =>
     api.get(`/product/recommend/${id}`);
+
+export const getProductCategories = () =>
+    api.get('/product/product_categories')
+
+export const getProductTypes = (category) =>
+    api.get(`/product/product_lifecycle_templates?category=${category}`)

@@ -1,31 +1,60 @@
 import { TextField, MenuItem } from "@mui/material";
+import { useField } from "formik";
 
-export default function EcoSelect({ label, options = [], ...props }) {
+export default function EcoSelect({
+  label,
+  options = [],
+  name,
+  value,
+  onChange,
+  ...props
+}) {
+  let field, meta;
+
+  try {
+    [field, meta] = name ? useField(name) : [];
+  } catch {
+    field = {};
+    meta = {};
+  }
+
+  const isFormik = Boolean(field?.name);
+
   return (
     <TextField
-      sx={{
-        "& .MuiOutlinedInput-root": {
-          borderRadius: "12px",
+      {...props}
+      select
+      fullWidth
+      label={label}
+      name={name}
+      value={isFormik ? field.value : value}
+      onChange={(e) => {
+        if (isFormik) {
+          field.onChange(e);
+        }
+        if (onChange) {
+          onChange(e);
         }
       }}
-      select fullWidth label={label} {...props}>
-      {options.map((opt, index) => {
-        // If option is an object
-        if (typeof opt === "object" && opt !== null) {
-          return (
-            <MenuItem key={opt.value ?? index} value={opt.value}>
-              {opt.label}
-            </MenuItem>
-          );
+      error={isFormik && meta.touched && Boolean(meta.error)}
+      helperText={isFormik && meta.touched ? meta.error : ""}
+      sx={{
+        "& .MuiOutlinedInput-root": {
+          borderRadius: "12px"
         }
-
-        // If option is string/number
-        return (
+      }}
+    >
+      {options.map((opt, index) =>
+        typeof opt === "object" ? (
+          <MenuItem key={opt.value ?? index} value={opt.value}>
+            {opt.label}
+          </MenuItem>
+        ) : (
           <MenuItem key={opt} value={opt}>
             {String(opt)}
           </MenuItem>
-        );
-      })}
+        )
+      )}
     </TextField>
   );
 }

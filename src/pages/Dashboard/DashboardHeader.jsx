@@ -9,6 +9,7 @@ import { logout as logoutAction } from "../../features/auth/authSlice";
 import { useDispatch } from "react-redux";
 import { NavLink, useParams } from "react-router-dom";
 import { DASHBOARD_CONFIG } from "./dashboardConfig";
+import EcoAlert from "../../components/common/EcoAlertDialog";
 // import QRScannerModal from "./QRScannerModal";
 
 export default function DashboardHeader({ title }) {
@@ -19,6 +20,11 @@ export default function DashboardHeader({ title }) {
     const theme = useTheme();
     const { role } = useParams();
     const config = DASHBOARD_CONFIG[role];
+    const [alert, setAlert] = useState({
+        open: false,
+        type: "success",
+        message: ""
+    });
 
     const identifier =
         userType === "government"
@@ -48,6 +54,12 @@ export default function DashboardHeader({ title }) {
 
     return (
         <>
+            <EcoAlert
+                open={alert.open}
+                type={alert.type}
+                message={alert.message}
+                onClose={() => setAlert({ ...alert, open: false })}
+            />
             <Stack
                 sx={{
                     mb: 1.5,
@@ -178,6 +190,25 @@ export default function DashboardHeader({ title }) {
             <CreateProductModal
                 open={openCreateProduct}
                 onClose={() => setOpenCreateProduct(false)}
+                onSuccess={(message) => {
+                    setAlert({
+                        open: true,
+                        type: "success",
+                        message: message
+                    });
+                }}
+                onError={(err) => {
+                    const backendMessage =
+                        err?.response?.data?.error ||
+                        err?.response?.data?.message ||
+                        "Something went wrong. Please try again.";
+
+                    setAlert({
+                        open: true,
+                        type: "error",
+                        message: backendMessage
+                    });
+                }}
             />
 
             <QRScannerModal

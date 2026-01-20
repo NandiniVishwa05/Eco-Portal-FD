@@ -3,10 +3,16 @@ import { useEffect, useState } from "react";
 import { getOverview } from "../../../../services/activityService";
 import CategoryTrendsChart from "./CategoryTrendsChart";
 import InlineLoader from "../../../../components/common/InlineLoader";
+import EcoAlert from "../../../../components/common/EcoAlertDialog";
 
 export default function OverviewTab() {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [alert, setAlert] = useState({
+        open: false,
+        type: "success",
+        message: ""
+    });
 
     useEffect(() => {
         const fetchOverview = async () => {
@@ -15,7 +21,16 @@ export default function OverviewTab() {
                 const res = await getOverview();
                 setData(res);
             } catch (err) {
-                console.error("Failed to fetch overview", err);
+                const backendMessage =
+                    err?.response?.data?.error ||
+                    err?.response?.data?.message ||
+                    "Something went wrong. Please try again.";
+
+                setAlert({
+                    open: true,
+                    type: "error",
+                    message: backendMessage
+                });
                 setData([]);
             } finally {
                 setLoading(false);
@@ -27,6 +42,12 @@ export default function OverviewTab() {
 
     return (
         <Box>
+            <EcoAlert
+                open={alert.open}
+                type={alert.type}
+                message={alert.message}
+                onClose={() => setAlert({ ...alert, open: false })}
+            />
             <Box>
                 <Typography fontSize={20} fontWeight={600}>
                     Overview

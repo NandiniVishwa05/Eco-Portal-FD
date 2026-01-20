@@ -57,6 +57,54 @@ function ProductDetails() {
         });
     }, [product_id]);
 
+    const lifecycleChartData = React.useMemo(() => {
+        if (!productData?.lifecycle) return [];
+
+        const l = productData.lifecycle;
+        if (productData.lifecycle.is_reusable) {
+            return [
+                {
+                    name: "Raw Material",
+                    eco_friendly: l.raw_material_weight * l.emission_factor
+                },
+                {
+                    name: "Manufacturing",
+                    eco_friendly: l.manufacturing_co2
+                },
+                {
+                    name: "Transport",
+                    eco_friendly: l.transport_co2
+                },
+                {
+                    name: "Washing",
+                    eco_friendly: l.washing_co2
+                },
+                {
+                    name: "End of Life",
+                    eco_friendly: l.end_of_life_co2
+                }
+            ];
+        }
+        return [
+            {
+                name: "Raw Material",
+                eco_friendly: l.raw_material_weight * l.emission_factor
+            },
+            {
+                name: "Manufacturing",
+                eco_friendly: l.manufacturing_co2
+            },
+            {
+                name: "Transport",
+                eco_friendly: l.transport_co2
+            },
+            {
+                name: "End of Life",
+                eco_friendly: l.end_of_life_co2
+            }
+        ];
+    }, [productData]);
+
     return (
         <div>
             <div className="min-h-screen flex flex-col font-sans text-slate-800 bg-gradient-to-br from-eco-100 via-sky-50 to-eco-50 selection:bg-eco-200">
@@ -133,14 +181,12 @@ function ProductDetails() {
                             </h3>
 
                             <ResponsiveContainer width="100%" height={260}>
-                                <BarChart data={productData?.lifecycle}>
+                                <BarChart data={lifecycleChartData}>
                                     <CartesianGrid strokeDasharray="3 3" />
                                     <XAxis dataKey="name" />
-                                    <YAxis hide />
+                                    <YAxis />
                                     <Tooltip />
                                     <Legend />
-
-                                    <Bar dataKey="conventional" fill="#fb7185" />
                                     <Bar dataKey="eco_friendly" fill="#34d399" />
                                 </BarChart>
                             </ResponsiveContainer>
@@ -148,31 +194,83 @@ function ProductDetails() {
                     </div>
 
                     <div className="space-y-6 mt-10">
-                        {productData?.lifecycle?.map((stage, index) => (
+                        <div
+                            className="bg-white p-6 rounded-2xl shadow-md"
+                        >
+                            <div className="flex items-center gap-4 mb-3">
+                                <h4 className="font-bold text-lg">
+                                    Step 1: Raw Material Extraction
+                                </h4>
+                            </div>
+
+                            <div className="grid grid-cols-3 gap-4 text-sm">
+                                <div className="text-eco-600 font-bold">
+                                    Eco-Friendly: {productData?.lifecycle?.raw_material_weight * productData?.lifecycle?.emission_factor}
+                                </div>
+                            </div>
+                        </div>
+                        <div
+                            className="bg-white p-6 rounded-2xl shadow-md"
+                        >
+                            <div className="flex items-center gap-4 mb-3">
+                                <h4 className="font-bold text-lg">
+                                    Step 2: Manufacturing
+                                </h4>
+                            </div>
+
+                            <div className="grid grid-cols-3 gap-4 text-sm">
+                                <div className="text-eco-600 font-bold">
+                                    Eco-Friendly: {productData?.lifecycle?.manufacturing_co2}
+                                </div>
+                            </div>
+                        </div>
+                        <div
+                            className="bg-white p-6 rounded-2xl shadow-md"
+                        >
+                            <div className="flex items-center gap-4 mb-3">
+                                <h4 className="font-bold text-lg">
+                                    Step 3: Transportation
+                                </h4>
+                            </div>
+
+                            <div className="grid grid-cols-3 gap-4 text-sm">
+                                <div className="text-eco-600 font-bold">
+                                    Eco-Friendly: {productData?.lifecycle?.transport_co2}
+                                </div>
+                            </div>
+                        </div>
+                        {productData?.lifecycle?.washing_co2 &&
                             <div
-                                key={index}
                                 className="bg-white p-6 rounded-2xl shadow-md"
                             >
                                 <div className="flex items-center gap-4 mb-3">
-                                    {/* {getIconForStage(stage.name)} */}
                                     <h4 className="font-bold text-lg">
-                                        Step {index + 1}: {stage?.name}
+                                        Step 4: Washing
                                     </h4>
                                 </div>
 
                                 <div className="grid grid-cols-3 gap-4 text-sm">
-                                    <div className="text-rose-600 font-bold">
-                                        Conventional: {stage?.conventional}
-                                    </div>
                                     <div className="text-eco-600 font-bold">
-                                        Eco-Friendly: {stage?.eco_friendly}
-                                    </div>
-                                    <div className="text-slate-500">
-                                        {stage?.impact}
+                                        Eco-Friendly: {productData?.lifecycle?.washing_co2}
                                     </div>
                                 </div>
                             </div>
-                        ))}
+                        }
+                        <div
+                            className="bg-white p-6 rounded-2xl shadow-md"
+                        >
+                            <div className="flex items-center gap-4 mb-3">
+                                <h4 className="font-bold text-lg">
+                                    Step {productData?.lifecycle?.washing_co2 ? 5 : 4}: End of life
+                                </h4>
+                            </div>
+
+                            <div className="grid grid-cols-3 gap-4 text-sm">
+                                <div className="text-eco-600 font-bold">
+                                    Eco-Friendly: {productData?.lifecycle?.end_of_life_co2}
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div className="mt-54 pt-16 border-t border-eco-200/50">
                         <div className="text-center mb-12 relative">
@@ -202,13 +300,13 @@ function ProductDetails() {
 
                                         <h4 className="font-bold text-eco-900 text-lg mb-1">{product?.name}</h4>
                                         <div className="relative z-10 bg-white p-4 rounded-2xl border border-eco-100 mb-5 shadow-sm group-hover:shadow-md transition-all">
-                                            <img src={product?.image} alt={`Image for ${product?.name}`} className="w-40 h-40 object-contain mix-blend-multiply opacity-90 group-hover:opacity-100" />
+                                            <img src={`${import.meta.env.VITE_BACKEND_API_URL}${product?.image}`} alt={`Image for ${product?.name}`} className="w-40 h-40 object-contain mix-blend-multiply opacity-90 group-hover:opacity-100" />
                                         </div>
 
                                         <div className="relative z-10 w-full">
                                             {/* <div className="text-[10px] text-eco-600 font-mono mb-3 opacity-70">{product.id}</div> */}
 
-                                            <a href={`http://localhost:3000/product-details/${product?._id}`} target="_blank" rel="noreferrer" className="flex items-center justify-center gap-1 w-full py-2 bg-white border border-eco-200 rounded-xl text-xs font-bold text-eco-700 hover:bg-eco-50 hover:text-eco-800 transition-colors shadow-sm">
+                                            <a href={`${window.location.origin}/product-details/${product?._id}`} target="_blank" rel="noreferrer" className="flex items-center justify-center gap-1 w-full py-2 bg-white border border-eco-200 rounded-xl text-xs font-bold text-eco-700 hover:bg-eco-50 hover:text-eco-800 transition-colors shadow-sm">
                                                 <ExternalLink className="w-3 h-3" /> View Product
                                             </a>
                                         </div>

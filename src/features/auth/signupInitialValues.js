@@ -5,7 +5,9 @@ export const signupInitialValues = {
         age: "",
         aadhaar: "",
         password: "",
-        confirmPassword: ""
+        confirmPassword: "",
+        receiveRewardsNotifications: false,
+        acceptTerms: false
     },
 
     manufacturer: {
@@ -16,7 +18,10 @@ export const signupInitialValues = {
         area: "",
         pincode: "",
         password: "",
-        confirmPassword: ""
+        confirmPassword: "",
+        participateEcoPoints: false,
+        receiveEcoUpdates: false,
+        agreeCarbonDisclosure: false,
     },
 
     retailer: {
@@ -27,7 +32,10 @@ export const signupInitialValues = {
         area: "",
         pincode: "",
         password: "",
-        confirmPassword: ""
+        confirmPassword: "",
+        participateEcoPoints: false,
+        receiveEcoUpdates: false,
+        agreeCarbonDisclosure: false,
     },
 
     institution: {
@@ -38,7 +46,10 @@ export const signupInitialValues = {
         area: "",
         pincode: "",
         password: "",
-        confirmPassword: ""
+        confirmPassword: "",
+        participateEcoPoints: false,
+        receiveEcoUpdates: false,
+        agreeCarbonDisclosure: false,
     },
 
     college: {
@@ -49,7 +60,10 @@ export const signupInitialValues = {
         area: "",
         pincode: "",
         password: "",
-        confirmPassword: ""
+        confirmPassword: "",
+        participateEcoPoints: false,
+        receiveEcoUpdates: false,
+        agreeCarbonDisclosure: false,
     },
 
     seller: {
@@ -60,6 +74,9 @@ export const signupInitialValues = {
         area: "",
         pincode: "",
         password: "",
-        confirmPassword: ""
+        confirmPassword: "",
+        participateEcoPoints: false,
+        receiveEcoUpdates: false,
+        agreeCarbonDisclosure: false,
     }
 };

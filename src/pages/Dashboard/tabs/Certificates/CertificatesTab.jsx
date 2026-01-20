@@ -36,6 +36,11 @@ export default function CertificatesTab() {
     );
     const [rows, setRows] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [alert, setAlert] = useState({
+        open: false,
+        type: "success",
+        message: ""
+    });
 
     /* ================= PAYMENT DIALOG ================= */
     const [showPaymentDialog, setShowPaymentDialog] = useState(false);
@@ -59,6 +64,16 @@ export default function CertificatesTab() {
                     setRows(mapRedeemedCertificates(data));
                 }
             } catch (e) {
+                const backendMessage =
+                    e?.response?.data?.error ||
+                    e?.response?.data?.message ||
+                    "Something went wrong. Please try again.";
+
+                setAlert({
+                    open: true,
+                    type: "error",
+                    message: backendMessage
+                });
                 console.error(e);
                 setRows([]);
             } finally {
@@ -79,6 +94,16 @@ export default function CertificatesTab() {
                 const data = await getGovernmentAvailableCertificates();
                 setGovData(data);
             } catch (e) {
+                const backendMessage =
+                    e?.response?.data?.error ||
+                    e?.response?.data?.message ||
+                    "Something went wrong. Please try again.";
+
+                setAlert({
+                    open: true,
+                    type: "error",
+                    message: backendMessage
+                });
                 console.error("Failed to fetch government certificates", e);
             } finally {
                 setLoading(false);
@@ -96,6 +121,11 @@ export default function CertificatesTab() {
 
             // Call API to redeem
             await redeemCertificate(row.id);
+            setAlert({
+                open: true,
+                type: "success",
+                message: "Certificate redeemed successfully."
+            });
 
             // Remove from available list
             setRows(prev => prev.filter(r => r.id !== row.id));
@@ -103,6 +133,16 @@ export default function CertificatesTab() {
             // Show payment success dialog
             setShowPaymentDialog(true);
         } catch (e) {
+            const backendMessage =
+                e?.response?.data?.error ||
+                e?.response?.data?.message ||
+                "Something went wrong. Please try again.";
+
+            setAlert({
+                open: true,
+                type: "error",
+                message: backendMessage
+            });
             console.error("Redeem failed", e);
         }
     };

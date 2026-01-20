@@ -20,13 +20,19 @@ import {
     mapSellerActivities,
     mapGovernmentActivities
 } from "./activityMapper";
+import EcoAlert from "../../../../components/common/EcoAlertDialog";
 
 export default function ActivitiesTab() {
     const { userType } = useSelector(state => state.auth);
-
+    const [alert, setAlert] = useState({
+        open: false,
+        type: "success",
+        message: ""
+    });
     const [mode, setMode] = useState("purchase");
     const [rows, setRows] = useState([]);
     const [loading, setLoading] = useState(false);
+    
 
     useEffect(() => {
         fetchActivities();
@@ -57,6 +63,16 @@ export default function ActivitiesTab() {
                 }
             }
         } catch (err) {
+            const backendMessage =
+                err?.response?.data?.error ||
+                err?.response?.data?.message ||
+                "Something went wrong. Please try again.";
+
+            setAlert({
+                open: true,
+                type: "error",
+                message: backendMessage
+            });
             console.error("Failed to fetch activities", err);
             setRows([]);
         } finally {
@@ -66,6 +82,12 @@ export default function ActivitiesTab() {
 
     return (
         <Box>
+            <EcoAlert
+                open={alert.open}
+                type={alert.type}
+                message={alert.message}
+                onClose={() => setAlert({ ...alert, open: false })}
+            />
             {/* PAGE HEADER */}
             <Box sx={{ mb: 2 }}>
                 <Typography fontSize={20} fontWeight={600}>

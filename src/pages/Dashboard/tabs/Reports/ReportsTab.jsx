@@ -52,13 +52,13 @@ export default function ReportsTab() {
 
             <Box 
                 sx={{ 
-                    p: 3,
+                    // p: 3,
                     borderRadius: '16px',
                     backgroundColor: 'background.paper',
-                    border: '2px solid',
-                    borderColor: 'rgba(15, 123, 107, 0.15)',
+                    // border: '2px solid',
+                    // borderColor: 'rgba(15, 123, 107, 0.15)',
                     mb: 3,
-                    boxShadow: '0 2px 8px rgba(15, 123, 107, 0.08)'
+                    // boxShadow: '0 2px 8px rgba(15, 123, 107, 0.08)'
                 }}
             >
                 <Typography fontSize={16} fontWeight={600} mb={3} color="primary.main">
@@ -70,12 +70,12 @@ export default function ReportsTab() {
             {selectedReport && (
                 <Box 
                     sx={{ 
-                        p: 3,
+                        // p: 3,
                         borderRadius: '16px',
                         backgroundColor: 'background.paper',
-                        border: '2px solid',
-                        borderColor: 'rgba(15, 123, 107, 0.15)',
-                        boxShadow: '0 2px 8px rgba(15, 123, 107, 0.08)'
+                        // border: '2px solid',
+                        // borderColor: 'rgba(15, 123, 107, 0.15)',
+                        // boxShadow: '0 2px 8px rgba(15, 123, 107, 0.08)'
                     }}
                 >
                     <Typography fontSize={16} fontWeight={600} mb={3} color="primary.main">

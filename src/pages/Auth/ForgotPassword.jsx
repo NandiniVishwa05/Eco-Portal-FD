@@ -7,12 +7,18 @@ import { forgotPasswordSchemas } from "../../features/auth/passwordResetValidati
 import { sendResetOtp } from "../../services/authService";
 import { useState } from "react";
 import FullScreenLoader from "../../components/common/FullScreenLoader";
+import EcoAlert from "../../components/common/EcoAlertDialog";
 
 export default function ForgotPassword() {
     const { state } = useLocation();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [loadingMessage, setLoadingMessage] = useState(true);
+    const [alert, setAlert] = useState({
+        open: false,
+        type: "success",
+        message: ""
+    });
 
     const role = state?.role;
 
@@ -23,7 +29,7 @@ export default function ForgotPassword() {
 
     const getFieldConfig = () => {
         if (role === "individual") {
-            return { name: "aadhar_id", label: "Aadhar ID", placeholder: "12-digit Aadhar" };
+            return { name: "aadhar_id", label: "Aadhar ID / PAN", placeholder: "12-digit Aadhar" };
         }
         if (role === "seller") {
             return { name: "email", label: "Email", placeholder: "Registered email" };
@@ -40,57 +46,80 @@ export default function ForgotPassword() {
                 : forgotPasswordSchemas.organization;
 
     return (
-        <AuthLayout showBack roleLabel="Reset password">
-            <FullScreenLoader
-                open={loading}
-                message={loadingMessage}
+        <>
+            <EcoAlert
+                open={alert.open}
+                type={alert.type}
+                message={alert.message}
+                onClose={() => setAlert({ ...alert, open: false })}
             />
-            <Formik
-                initialValues={{ [field.name]: "" }}
-                validationSchema={schema}
-                onSubmit={async (values) => {
-                    try {
-                        setLoading(true);
-                        setLoadingMessage("Sending otp...");
-                        await sendResetOtp({
-                            user_type: state.role === "individual" ? "individual" : "organization",
-                            organization_type: state.role,
-                            ...values
-                        });
-                        navigate("/auth/verify-otp", {
-                            state: { role, identifier: values }
-                        });
-                    } catch (error) {
-                        console.error("Error sending reset OTP:", error);
-                    } finally {
-                        setLoading(false);
-                    }
-                }}
-            >
-                {({ values, errors, touched, handleChange, handleSubmit }) => (
-                    <form onSubmit={handleSubmit}>
-                        <Stack spacing={2}>
-                            <Typography fontSize={22} fontWeight={800}>
-                                Forgot password
-                            </Typography>
+            <AuthLayout showBack roleLabel="Reset password">
+                <FullScreenLoader
+                    open={loading}
+                    message={loadingMessage}
+                />
+                <Formik
+                    initialValues={{ [field.name]: "" }}
+                    validationSchema={schema}
+                    onSubmit={async (values) => {
+                        try {
+                            setLoading(true);
+                            setLoadingMessage("Sending otp...");
+                            await sendResetOtp({
+                                user_type: state.role === "individual" ? "individual" : "organization",
+                                organization_type: state.role,
+                                ...values
+                            });
+                            setAlert({
+                                open: true,
+                                type: "success",
+                                message: "OTP sent successfully"
+                            });
+                            navigate("/auth/verify-otp", {
+                                state: { role, identifier: values }
+                            });
+                        } catch (error) {
+                            console.error("Error sending reset OTP:", error);
+                            const backendMessage =
+                                error?.response?.data?.error ||
+                                error?.response?.data?.message ||
+                                "Error sending reset OTP.";
 
-                            <EcoInput
-                                name={field.name}
-                                label={field.label}
-                                placeholder={field.placeholder}
-                                value={values[field.name]}
-                                onChange={handleChange}
-                                error={touched[field.name] && Boolean(errors[field.name])}
-                                helperText={touched[field.name] && errors[field.name]}
-                            />
+                            setAlert({
+                                open: true,
+                                type: "error",
+                                message: backendMessage
+                            });
+                        } finally {
+                            setLoading(false);
+                        }
+                    }}
+                >
+                    {({ values, errors, touched, handleChange, handleSubmit }) => (
+                        <form onSubmit={handleSubmit}>
+                            <Stack spacing={2}>
+                                <Typography fontSize={22} fontWeight={800}>
+                                    Forgot password
+                                </Typography>
 
-                            <Button type="submit" variant="contained" size="large">
-                                Send OTP
-                            </Button>
-                        </Stack>
-                    </form>
-                )}
-            </Formik>
-        </AuthLayout>
+                                <EcoInput
+                                    name={field.name}
+                                    label={field.label}
+                                    placeholder={field.placeholder}
+                                    value={values[field.name]}
+                                    onChange={handleChange}
+                                    error={touched[field.name] && Boolean(errors[field.name])}
+                                    helperText={touched[field.name] && errors[field.name]}
+                                />
+
+                                <Button type="submit" variant="contained" size="large">
+                                    Send OTP
+                                </Button>
+                            </Stack>
+                        </form>
+                    )}
+                </Formik>
+            </AuthLayout>
+        </>
     );
 }

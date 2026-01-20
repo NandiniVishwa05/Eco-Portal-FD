@@ -14,7 +14,7 @@ const confirmPassword = Yup.string()
     .required("Confirm password is required");
 
 const aadhaar = Yup.string()
-    .matches(/^\d{12}$/, "Aadhaar must be exactly 12 digits")
+    // .matches(/^\d{12}$/, "Aadhaar must be exactly 12 digits")
     .required("Aadhaar ID is required");
 
 const gstin = Yup.string()
@@ -39,7 +39,9 @@ export const signupSchemas = {
             .required("Age is required"),
         aadhaar,
         password,
-        confirmPassword
+        confirmPassword,
+        acceptTerms: Yup.boolean()
+            .oneOf([true], "You must accept Terms & Privacy Policy")
     }),
 
     manufacturer: Yup.object({
@@ -50,7 +52,9 @@ export const signupSchemas = {
         area,
         pincode,
         password,
-        confirmPassword
+        confirmPassword,
+        agreeCarbonDisclosure: Yup.boolean()
+            .oneOf([true], "Carbon data disclosure is required")
     }),
 
     retailer: Yup.object({
@@ -61,7 +65,9 @@ export const signupSchemas = {
         area,
         pincode,
         password,
-        confirmPassword
+        confirmPassword,
+        agreeCarbonDisclosure: Yup.boolean()
+            .oneOf([true], "Carbon data disclosure is required")
     }),
 
     institution: Yup.object({
@@ -72,7 +78,9 @@ export const signupSchemas = {
         area,
         pincode,
         password,
-        confirmPassword
+        confirmPassword,
+        agreeCarbonDisclosure: Yup.boolean()
+            .oneOf([true], "Carbon data disclosure is required")
     }),
 
     college: Yup.object({
@@ -83,7 +91,9 @@ export const signupSchemas = {
         area,
         pincode,
         password,
-        confirmPassword
+        confirmPassword,
+        agreeCarbonDisclosure: Yup.boolean()
+            .oneOf([true], "Carbon data disclosure is required")
     }),
 
     seller: Yup.object({
@@ -96,6 +106,8 @@ export const signupSchemas = {
         area,
         pincode,
         password,
-        confirmPassword
+        confirmPassword,
+        agreeCarbonDisclosure: Yup.boolean()
+            .oneOf([true], "Carbon data disclosure is required")
     })
 };

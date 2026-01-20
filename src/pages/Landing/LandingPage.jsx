@@ -51,8 +51,8 @@ const LandingPage = () => {
                     <Stack direction="row" spacing={2} alignItems="center">
                         <Box
                             sx={{
-                                width: 48,
-                                height: 48,
+                                width: 69,
+                                height: 54,
                                 borderRadius: "12px",      // ✅ old value
                                 background: theme.custom.gradients.soft,
                                 display: "flex",

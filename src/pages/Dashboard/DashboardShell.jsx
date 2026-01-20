@@ -62,7 +62,7 @@ export default function DashboardShell() {
                                     <Box sx={{
                                         display: "flex",
                                         alignItems: "center",
-                                        gap:5
+                                        gap: 5
 
                                     }}>
                                         {/* <EcoPointsPieChart
@@ -71,9 +71,11 @@ export default function DashboardShell() {
                                             used={user.redeemed_ecopoints}
                                         /> */}
                                         <EcoPointsGaugeChart
+                                            label="EcoPoints"
                                             ecoPoints={user.ecopoints || 0}
                                         />
                                         <EcoPointsCylinder
+                                            label="Ecometer"
                                             // collected={user.total_ecopoints}
                                             available={user.ecopoints}
                                             used={user.redeemed_ecopoints}
@@ -83,6 +85,7 @@ export default function DashboardShell() {
                                 }
                                 {role === "organization" &&
                                     <EcoPointsGaugeChart
+                                        label="CO₂ METER"
                                         ecoPoints={user.ecopoints || 0}
                                     />
                                 }

@@ -21,10 +21,22 @@ import {
     mapRedeemedRewards,
     mapCreatedRewards
 } from "./rewardsMapper";
+import RewardSuccessDialog from "./RewardSuccessDialog";
+import EcoAlert from "../../../../components/common/EcoAlertDialog";
 
 export default function RewardsTab() {
+    const [successDialog, setSuccessDialog] = useState({
+        open: false,
+        rewardName: "",
+        points: null
+    });
     const { userType, user } = useSelector(state => state.auth);
     const [openCreate, setOpenCreate] = useState(false);
+    const [alert, setAlert] = useState({
+        open: false,
+        type: "success",
+        message: ""
+    });
     const dispatch = useDispatch();
     const rewardRole =
         userType === "organization" && user?.organization_type === "college"
@@ -47,15 +59,30 @@ export default function RewardsTab() {
         }
     }, [rewardRole]);
 
-    const handleRedeem = async (rewardId, rewardCost) => {
+    const handleRedeem = async (rewardId, rewardCost, rewardName) => {
         try {
-            await redeemReward(rewardId);
+            const res = await redeemReward(rewardId);
             const userInfo = await getUserInfo();
             console.log(userInfo);
             dispatch(loginSuccess(userInfo));
             setRows(prev => prev.filter(r => r.id !== rewardId));
+            setSuccessDialog({
+                open: true,
+                rewardName,
+                points: rewardCost
+            });
             // dispatch(updateEcoPoints({ rewardCost }));
         } catch (err) {
+            const backendMessage =
+                err?.response?.data?.error ||
+                err?.response?.data?.message ||
+                "Something went wrong. Please try again.";
+
+            setAlert({
+                open: true,
+                type: "error",
+                message: backendMessage
+            });
             console.error("Failed to redeem reward", err);
         }
     };
@@ -93,6 +120,16 @@ export default function RewardsTab() {
                     setRows(mapCreatedRewards(data));
                 }
             } catch (err) {
+                const backendMessage =
+                    err?.response?.data?.error ||
+                    err?.response?.data?.message ||
+                    "Something went wrong. Please try again.";
+
+                setAlert({
+                    open: true,
+                    type: "error",
+                    message: backendMessage
+                });
                 console.error("Failed to fetch rewards", err);
                 setRows([]);
             } finally {
@@ -115,6 +152,12 @@ export default function RewardsTab() {
     ) {
         return (
             <Box>
+                <EcoAlert
+                    open={alert.open}
+                    type={alert.type}
+                    message={alert.message}
+                    onClose={() => setAlert({ ...alert, open: false })}
+                />
                 <Stack direction="row" justifyContent="space-between" >
                     <Box >
                         <Typography fontSize={20} fontWeight={600} mb={2}>
@@ -163,12 +206,12 @@ export default function RewardsTab() {
                         role="individual"
                         rewards={rows}
                     />
-                    <GovernmentRewardsSection
+                    {/* <GovernmentRewardsSection
                         loading={loading}
                         title="College Rewards"
                         role="college"
                         rewards={rows}
-                    />
+                    /> */}
                     <GovernmentRewardsSection
                         loading={loading}
                         title="Manufacturer Rewards"
@@ -183,21 +226,40 @@ export default function RewardsTab() {
                     />
                     <GovernmentRewardsSection
                         loading={loading}
-                        title="Seller Rewards"
+                        title="Other Rewards"
                         role="seller"
                         rewards={rows}
                     />
-                    <GovernmentRewardsSection
+                    {/* <GovernmentRewardsSection
                         loading={loading}
                         title="Institution Rewards"
                         role="institution"
                         rewards={rows}
-                    />
+                    /> */}
                 </Stack>
 
                 <CreateRewardModal
                     open={openCreate}
                     onClose={() => setOpenCreate(false)}
+                    onSuccess={(message) => {
+                        setAlert({
+                            open: true,
+                            type: "success",
+                            message: message
+                        });
+                    }}
+                    onError={(err) => {
+                        const backendMessage =
+                            err?.response?.data?.error ||
+                            err?.response?.data?.message ||
+                            "Something went wrong. Please try again.";
+
+                        setAlert({
+                            open: true,
+                            type: "error",
+                            message: backendMessage
+                        });
+                    }}
                 />
             </Box>
         );
@@ -214,6 +276,25 @@ export default function RewardsTab() {
 
     return (
         <Box>
+            <EcoAlert
+                open={alert.open}
+                type={alert.type}
+                message={alert.message}
+                onClose={() => setAlert({ ...alert, open: false })}
+            />
+            <RewardSuccessDialog
+                open={successDialog.open}
+                rewardName={successDialog.rewardName}
+                points={successDialog.points}
+                onClose={() =>
+                    setSuccessDialog({
+                        open: false,
+                        rewardName: "",
+                        points: null
+                    })
+                }
+            />
+
             <Stack direction="row" justifyContent="space-between" mb={2}>
                 <Box>
                     <Typography fontSize={20} fontWeight={600}>

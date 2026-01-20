@@ -3,7 +3,7 @@ export const mapAvailableRewards = (data) =>
         id: item._id,
         sr: index + 1,
         name: item.name,
-        creator: item.organization_name || "Government",
+        creator: item.organization_name || "Earth's Essence",
         ecopoints: item.ecopoints_required,
         co2: item.co2_savings,
         type: item.is_monetary ? "Monetary" : "Non-Monetary",

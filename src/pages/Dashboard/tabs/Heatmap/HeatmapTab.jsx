@@ -7,6 +7,7 @@ import {
 } from "../../../../services/mapService";
 import HeatmapResultsTable from "./HeatmapResultsTable";
 import InlineLoader from "../../../../components/common/InlineLoader";
+import EcoAlert from "../../../../components/common/EcoAlertDialog";
 
 export default function HeatmapTab() {
     const [heatPoints, setHeatPoints] = useState([]);
@@ -14,6 +15,11 @@ export default function HeatmapTab() {
     const [loadingOrgs, setLoadingOrgs] = useState(false);
     const [loading, setLoading] = useState(false);
     const [loadingMessage, setLoadingMessage] = useState("");
+    const [alert, setAlert] = useState({
+        open: false,
+        type: "success",
+        message: ""
+    });
 
     useEffect(() => {
         const loadHeatmap = async () => {
@@ -25,6 +31,16 @@ export default function HeatmapTab() {
                     data.map(item => [item.lat, item.lng, item.weight || 1])
                 );
             } catch (error) {
+                const backendMessage =
+                    error?.response?.data?.error ||
+                    error?.response?.data?.message ||
+                    "Something went wrong. Please try again.";
+
+                setAlert({
+                    open: true,
+                    type: "error",
+                    message: backendMessage
+                });
                 console.error("Failed to load heatmap data:", error);
             } finally {
                 setLoading(false);
@@ -45,6 +61,12 @@ export default function HeatmapTab() {
 
     return (
         <Box>
+            <EcoAlert
+                open={alert.open}
+                type={alert.type}
+                message={alert.message}
+                onClose={() => setAlert({ ...alert, open: false })}
+            />
             <Box sx={{ mb: 3 }}>
                 <Typography fontSize={20} fontWeight={600}>
                     Heatmap

@@ -13,7 +13,7 @@ const ECOPOINTS_RANGES = [
 
 const TOTAL_MAX = 5500;
 
-const EcoPointsGaugeChart = ({ ecoPoints = 0 }) => {
+const EcoPointsGaugeChart = ({ label = "CO₂ METER", ecoPoints = 0 }) => {
     const cx = 100;
     const cy = 100;
     const iR = 42;
@@ -122,7 +122,7 @@ const EcoPointsGaugeChart = ({ ecoPoints = 0 }) => {
                         letterSpacing: '0.6px',
                         marginTop: '-4px'
                     }}>
-                        CO₂ METER
+                        {label}
                     </div>
 
                 </div>

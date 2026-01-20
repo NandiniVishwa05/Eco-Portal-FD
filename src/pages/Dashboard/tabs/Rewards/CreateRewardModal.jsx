@@ -18,7 +18,8 @@ import { useState } from "react";
 export default function CreateRewardModal({
     open,
     onClose,
-    onSuccess
+    onSuccess,
+    onError,
 }) {
 
     const [loading, setLoading] = useState(false);
@@ -28,9 +29,10 @@ export default function CreateRewardModal({
             setLoading(true);
             setLoadingMessage("Creating reward...");
             await createReward(values);
-            onSuccess();      // refresh table
-            onClose();        // close modal
+            onSuccess("Reward created successfully");
+            onClose();
         } catch (error) {
+            onError(error);
             if (error.response?.data?.errors) {
                 setErrors(error.response.data.errors);
             }
@@ -87,7 +89,7 @@ export default function CreateRewardModal({
 
                                 <EcoInput
                                     name="co2_savings"
-                                    label="CO₂ savings"
+                                    label="CO₂ Emission"
                                     value={values.co2_savings}
                                     onChange={handleChange}
                                     error={

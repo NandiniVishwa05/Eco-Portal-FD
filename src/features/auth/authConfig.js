@@ -9,7 +9,7 @@ export const AUTH_CONFIG = {
 
     individual: {
         role: "individual",
-        identifierLabel: "Aadhaar ID",
+        identifierLabel: "Aadhaar ID / PAN",
         identifierType: "number",
         allowSignup: true,
         dashboard: "/dashboard/individual"

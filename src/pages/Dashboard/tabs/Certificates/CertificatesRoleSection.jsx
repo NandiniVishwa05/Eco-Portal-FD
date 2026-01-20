@@ -9,7 +9,7 @@ export default function CertificatesRoleSection({ role, certificates, loading })
     return (
         <>
             <Typography fontSize={18} fontWeight={700} sx={{ mb: 1 }}>
-                {role.toUpperCase()}
+                {role === "seller" ? "OTHER" : role.toUpperCase()}
             </Typography>
 
             <CertificatesTable

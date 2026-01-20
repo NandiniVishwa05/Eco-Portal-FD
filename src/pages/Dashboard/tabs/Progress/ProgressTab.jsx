@@ -3,10 +3,16 @@ import { Box, Typography, Paper } from "@mui/material";
 import { getProgressData } from "../../../../services/progressService";
 import ProgressChart from "./ProgressChart";
 import InlineLoader from "../../../../components/common/InlineLoader";
+import EcoAlert from "../../../../components/common/EcoAlertDialog";
 
 export default function ProgressTab() {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [alert, setAlert] = useState({
+        open: false,
+        type: "success",
+        message: ""
+    });
 
     useEffect(() => {
         fetchProgress();
@@ -25,6 +31,16 @@ export default function ProgressTab() {
 
             setData(mapped);
         } catch (err) {
+            const backendMessage =
+                err?.response?.data?.error ||
+                err?.response?.data?.message ||
+                "Something went wrong. Please try again.";
+
+            setAlert({
+                open: true,
+                type: "error",
+                message: backendMessage
+            });
             console.error("Failed to load progress", err);
             setData([]);
         } finally {
@@ -34,6 +50,12 @@ export default function ProgressTab() {
 
     return (
         <Box>
+            <EcoAlert
+                open={alert.open}
+                type={alert.type}
+                message={alert.message}
+                onClose={() => setAlert({ ...alert, open: false })}
+            />
             {/* PAGE HEADER */}
             <Box sx={{ mb: 3 }}>
                 <Typography fontSize={20} fontWeight={600}>

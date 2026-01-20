@@ -1,7 +1,10 @@
 import {
     Stack,
     Typography,
-    Button
+    Button,
+    FormControlLabel,
+    Switch,
+    Checkbox
 } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Formik } from "formik";
@@ -14,6 +17,8 @@ import { signupInitialValues } from "../../features/auth/signupInitialValues";
 import { signup } from "../../services/authService";
 import { useState } from "react";
 import FullScreenLoader from "../../components/common/FullScreenLoader"
+import { CheckBox } from "@mui/icons-material";
+import EcoAlert from "../../components/common/EcoAlertDialog";
 export default function Signup() {
     const { state } = useLocation();
     const navigate = useNavigate();
@@ -22,6 +27,11 @@ export default function Signup() {
     const config = AUTH_CONFIG[role];
     const [loading, setLoading] = useState(false);
     const [loadingMessage, setLoadingMessage] = useState("");
+    const [alert, setAlert] = useState({
+        open: false,
+        type: "success",
+        message: ""
+    });
 
     if (!config || !config.allowSignup) {
         navigate("/");
@@ -50,14 +60,29 @@ export default function Signup() {
             setLoading(true);
             setLoadingMessage("Creating account...");
             await signup(payload);
+            setAlert({
+                open: true,
+                type: "success",
+                message: "Account created successfully"
+            });
 
             // success → redirect
-            navigate("/auth/login", { state: { role } });
+            setTimeout(() => {
+                navigate("/auth/login", { state: { role } });
+            }, 3000);
 
         } catch (error) {
-            /**
-             * Backend error handling
-             */
+            const backendMessage =
+                error?.response?.data?.error ||
+                error?.response?.data?.message ||
+                "Something went wrong. Please try again.";
+
+            setAlert({
+                open: true,
+                type: "error",
+                message: backendMessage
+            });
+
             if (error.response?.data?.errors) {
                 // field-level errors from backend
                 setErrors(error.response.data.errors);
@@ -73,195 +98,304 @@ export default function Signup() {
     };
 
     return (
-        <AuthLayout
-            showBack
-            roleLabel={`${role} account`}
-            roleDescription="Create a verified account to access EcoPortal services."
-        >
-            <FullScreenLoader
-                open={loading}
-                message={loadingMessage}
+        <>
+            <EcoAlert
+                open={alert.open}
+                type={alert.type}
+                message={alert.message}
+                onClose={() => setAlert({ ...alert, open: false })}
             />
-            <Stack spacing={3}>
-                <Typography fontSize={26} fontWeight={800}>
-                    Create account
-                </Typography>
+            <AuthLayout
+                showBack
+                roleLabel={`${role} account`}
+                roleDescription="Create a verified account to access EcoPortal services."
+            >
+                <FullScreenLoader
+                    open={loading}
+                    message={loadingMessage}
+                />
+                <Stack spacing={3}>
+                    <Typography fontSize={26} fontWeight={800}>
+                        Create account
+                    </Typography>
 
-                <Formik
-                    initialValues={signupInitialValues[role]}
-                    validationSchema={signupSchemas[role]}
-                    onSubmit={handleSubmit}
-                >
-                    {({
-                        values,
-                        errors,
-                        touched,
-                        handleChange,
-                        handleSubmit
-                    }) => (
-                        <form onSubmit={handleSubmit}>
-                            <Stack spacing={2}>
-                                {/* Individual */}
-                                {role === "individual" && (
-                                    <>
-                                        <EcoInput
-                                            name="fullName"
-                                            label="Full name"
-                                            placeholder="Enter your full name"
-                                            value={values.fullName}
-                                            onChange={handleChange}
-                                            error={touched.fullName && Boolean(errors.fullName)}
-                                            helperText={touched.fullName && errors.fullName}
-                                        />
+                    <Formik
+                        initialValues={signupInitialValues[role]}
+                        validationSchema={signupSchemas[role]}
+                        onSubmit={handleSubmit}
+                    >
+                        {({
+                            values,
+                            errors,
+                            touched,
+                            handleChange,
+                            handleSubmit
+                        }) => (
+                            <form onSubmit={handleSubmit}>
+                                <Stack spacing={2}>
+                                    {/* Individual */}
+                                    {role === "individual" && (
+                                        <>
+                                            <EcoInput
+                                                name="fullName"
+                                                label="Full name"
+                                                placeholder="Enter your full name"
+                                                value={values.fullName}
+                                                onChange={handleChange}
+                                                error={touched.fullName && Boolean(errors.fullName)}
+                                                helperText={touched.fullName && errors.fullName}
+                                            />
 
-                                        <EcoInput
-                                            name="email"
-                                            label="Email"
-                                            placeholder="Enter your email"
-                                            value={values.email}
-                                            onChange={handleChange}
-                                            error={touched.email && Boolean(errors.email)}
-                                            helperText={touched.email && errors.email}
-                                        />
+                                            <EcoInput
+                                                name="email"
+                                                label="Email"
+                                                placeholder="Enter your email"
+                                                value={values.email}
+                                                onChange={handleChange}
+                                                error={touched.email && Boolean(errors.email)}
+                                                helperText={touched.email && errors.email}
+                                            />
 
-                                        <EcoInput
-                                            name="age"
-                                            label="Age"
-                                            placeholder="Enter your age"
-                                            value={values.age}
-                                            onChange={handleChange}
-                                            error={touched.age && Boolean(errors.age)}
-                                            helperText={touched.age && errors.age}
-                                        />
+                                            <EcoInput
+                                                name="age"
+                                                label="Age"
+                                                placeholder="Enter your age"
+                                                value={values.age}
+                                                onChange={handleChange}
+                                                error={touched.age && Boolean(errors.age)}
+                                                helperText={touched.age && errors.age}
+                                            />
 
-                                        <EcoInput
-                                            name="aadhaar"
-                                            label="Aadhaar ID"
-                                            placeholder="12-digit Aadhaar number"
-                                            value={values.aadhaar}
-                                            onChange={handleChange}
-                                            error={touched.aadhaar && Boolean(errors.aadhaar)}
-                                            helperText={touched.aadhaar && errors.aadhaar}
-                                        />
-                                    </>
-                                )}
+                                            <EcoInput
+                                                name="aadhaar"
+                                                label="Aadhar ID / PAN"
+                                                placeholder="12-digit Aadhaar number"
+                                                value={values.aadhaar}
+                                                onChange={handleChange}
+                                                error={touched.aadhaar && Boolean(errors.aadhaar)}
+                                                helperText={touched.aadhaar && errors.aadhaar}
+                                            />
+                                            <EcoPasswordInput
+                                                name="password"
+                                                placeholder="Create password"
+                                                value={values.password}
+                                                onChange={handleChange}
+                                                error={touched.password && Boolean(errors.password)}
+                                                helperText={touched.password && errors.password}
+                                            />
+                                            <EcoPasswordInput
+                                                name="confirmPassword"
+                                                placeholder="Confirm password"
+                                                value={values.confirmPassword}
+                                                onChange={handleChange}
+                                                error={
+                                                    touched.confirmPassword &&
+                                                    Boolean(errors.confirmPassword)
+                                                }
+                                                helperText={
+                                                    touched.confirmPassword &&
+                                                    errors.confirmPassword
+                                                }
+                                            />
+                                            <FormControlLabel
+                                                control={
+                                                    <Switch
+                                                        name="receiveRewardsNotifications"
+                                                        checked={values.receiveRewardsNotifications}
+                                                        onChange={handleChange}
+                                                    />
+                                                }
+                                                label="Receive Rewards Notifications"
+                                            />
 
-                                {role !== "individual" && (
-                                    <>
-                                        <EcoInput
-                                            name="organizationName"
-                                            label="Organization name"
-                                            placeholder="Enter organization name"
-                                            value={values.organizationName}
-                                            onChange={handleChange}
-                                            error={
-                                                touched.organizationName &&
-                                                Boolean(errors.organizationName)
-                                            }
-                                            helperText={
-                                                touched.organizationName &&
-                                                errors.organizationName
-                                            }
-                                        />
+                                            <FormControlLabel
+                                                control={
+                                                    <Checkbox
+                                                        name="acceptTerms"
+                                                        checked={values.acceptTerms}
+                                                        onChange={handleChange}
+                                                    />
+                                                }
+                                                label="Accept Terms & Privacy Policy"
+                                            />
 
-                                        <EcoInput
-                                            name="email"
-                                            label="Email"
-                                            placeholder="Enter email"
-                                            value={values.email}
-                                            onChange={handleChange}
-                                            error={touched.email && Boolean(errors.email)}
-                                            helperText={touched.email && errors.email}
-                                        />
+                                            <Typography color="error" fontSize={12}>
+                                                {touched.acceptTerms && errors.acceptTerms}
+                                            </Typography>
+                                        </>
+                                    )}
 
-                                        <EcoInput
-                                            name="gstin"
-                                            label="GSTIN"
-                                            placeholder={
-                                                role === "seller"
-                                                    ? "GSTIN (optional)"
-                                                    : "15-character GSTIN"
-                                            }
-                                            value={values.gstin}
-                                            onChange={handleChange}
-                                            error={touched.gstin && Boolean(errors.gstin)}
-                                            helperText={touched.gstin && errors.gstin}
-                                        />
+                                    {role !== "individual" && (
+                                        <>
+                                            <EcoInput
+                                                name="organizationName"
+                                                label="Organization name"
+                                                placeholder="Enter organization name"
+                                                value={values.organizationName}
+                                                onChange={handleChange}
+                                                error={
+                                                    touched.organizationName &&
+                                                    Boolean(errors.organizationName)
+                                                }
+                                                helperText={
+                                                    touched.organizationName &&
+                                                    errors.organizationName
+                                                }
+                                            />
 
-                                        <EcoInput
-                                            name="city"
-                                            label="City"
-                                            placeholder="Enter city name"
-                                            value={values.city}
-                                            onChange={handleChange}
-                                            error={touched.city && Boolean(errors.city)}
-                                            helperText={touched.city && errors.city}
-                                        />
+                                            <EcoInput
+                                                name="email"
+                                                label="Email"
+                                                placeholder="Enter email"
+                                                value={values.email}
+                                                onChange={handleChange}
+                                                error={touched.email && Boolean(errors.email)}
+                                                helperText={touched.email && errors.email}
+                                            />
 
-                                        <EcoInput
-                                            name="area"
-                                            label="Area"
-                                            placeholder="Enter area (optional)"
-                                            value={values.area}
-                                            onChange={handleChange}
-                                            error={touched.area && Boolean(errors.area)}
-                                            helperText={touched.area && errors.area}
-                                        />
+                                            <EcoInput
+                                                name="gstin"
+                                                label="GSTIN"
+                                                placeholder={
+                                                    role === "seller"
+                                                        ? "GSTIN (optional)"
+                                                        : "15-character GSTIN"
+                                                }
+                                                value={values.gstin}
+                                                onChange={handleChange}
+                                                error={touched.gstin && Boolean(errors.gstin)}
+                                                helperText={touched.gstin && errors.gstin}
+                                            />
 
-                                        <EcoInput
-                                            name="pincode"
-                                            label="Pincode"
-                                            placeholder="6-digit pincode"
-                                            value={values.pincode}
-                                            onChange={handleChange}
-                                            error={touched.pincode && Boolean(errors.pincode)}
-                                            helperText={touched.pincode && errors.pincode}
-                                        />
-                                    </>
-                                )}
-                                {/* Passwords */}
-                                <EcoPasswordInput
-                                    name="password"
-                                    placeholder="Create password"
-                                    value={values.password}
-                                    onChange={handleChange}
-                                    error={touched.password && Boolean(errors.password)}
-                                    helperText={touched.password && errors.password}
-                                />
+                                            <EcoInput
+                                                name="city"
+                                                label="City"
+                                                placeholder="Enter city name"
+                                                value={values.city}
+                                                onChange={handleChange}
+                                                error={touched.city && Boolean(errors.city)}
+                                                helperText={touched.city && errors.city}
+                                            />
 
-                                <EcoPasswordInput
-                                    name="confirmPassword"
-                                    placeholder="Confirm password"
-                                    value={values.confirmPassword}
-                                    onChange={handleChange}
-                                    error={
-                                        touched.confirmPassword &&
-                                        Boolean(errors.confirmPassword)
-                                    }
-                                    helperText={
-                                        touched.confirmPassword &&
-                                        errors.confirmPassword
-                                    }
-                                />
+                                            <EcoInput
+                                                name="area"
+                                                label="Area"
+                                                placeholder="Enter area (optional)"
+                                                value={values.area}
+                                                onChange={handleChange}
+                                                error={touched.area && Boolean(errors.area)}
+                                                helperText={touched.area && errors.area}
+                                            />
 
-                                <Button
-                                    type="submit"
-                                    variant="contained"
-                                    size="large"
-                                    sx={{
-                                        mt: 1,
-                                        py: 1.4,
-                                        fontWeight: 700,
-                                        borderRadius: "12px"
-                                    }}
-                                >
-                                    Create account
-                                </Button>
-                            </Stack>
-                        </form>
-                    )}
-                </Formik>
-            </Stack>
-        </AuthLayout>
+                                            <EcoInput
+                                                name="pincode"
+                                                label="Pincode"
+                                                placeholder="6-digit pincode"
+                                                value={values.pincode}
+                                                onChange={handleChange}
+                                                error={touched.pincode && Boolean(errors.pincode)}
+                                                helperText={touched.pincode && errors.pincode}
+                                            />
+                                            <EcoInput
+                                                name="websiteLink"
+                                                label="Website Link"
+                                                placeholder="https://example.com"
+                                                value={values.websiteLink}
+                                                onChange={handleChange}
+                                                error={touched.websiteLink && Boolean(errors.websiteLink)}
+                                                helperText={touched.websiteLink && errors.websiteLink}
+                                            />
+                                            <EcoPasswordInput
+                                                name="password"
+                                                placeholder="Create password"
+                                                value={values.password}
+                                                onChange={handleChange}
+                                                error={touched.password && Boolean(errors.password)}
+                                                helperText={touched.password && errors.password}
+                                            />
+
+                                            <EcoPasswordInput
+                                                name="confirmPassword"
+                                                placeholder="Confirm password"
+                                                value={values.confirmPassword}
+                                                onChange={handleChange}
+                                                error={
+                                                    touched.confirmPassword &&
+                                                    Boolean(errors.confirmPassword)
+                                                }
+                                                helperText={
+                                                    touched.confirmPassword &&
+                                                    errors.confirmPassword
+                                                }
+                                            />
+                                            <Stack
+                                                direction="row"
+                                                alignItems="center"
+                                                justifyContent="space-between"
+                                            >
+                                                <Typography fontSize={14}>
+                                                    Participate in EcoPoints Program
+                                                </Typography>
+
+                                                <Switch
+                                                    name="participateEcoPoints"
+                                                    checked={values.participateEcoPoints}
+                                                    onChange={handleChange}
+                                                />
+                                            </Stack>
+
+                                            <Stack
+                                                direction="row"
+                                                alignItems="center"
+                                                justifyContent="space-between"
+                                            >
+                                                <Typography fontSize={14}>
+                                                    Receive Eco Updates & Alerts
+                                                </Typography>
+
+                                                <Switch
+                                                    name="receiveEcoUpdates"
+                                                    checked={values.receiveEcoUpdates}
+                                                    onChange={handleChange}
+                                                />
+                                            </Stack>
+                                            <FormControlLabel
+                                                control={
+                                                    <Checkbox
+                                                        name="agreeCarbonDisclosure"
+                                                        checked={values.agreeCarbonDisclosure}
+                                                        onChange={handleChange}
+                                                    />
+                                                }
+                                                label="Agree to Carbon Data Disclosure"
+                                            />
+                                            <Typography color="error" fontSize={12}>
+                                                {touched.agreeCarbonDisclosure && errors.agreeCarbonDisclosure}
+                                            </Typography>
+                                        </>
+                                    )}
+                                    {/* Passwords */}
+
+
+                                    <Button
+                                        type="submit"
+                                        variant="contained"
+                                        size="large"
+                                        sx={{
+                                            mt: 1,
+                                            py: 1.4,
+                                            fontWeight: 700,
+                                            borderRadius: "12px"
+                                        }}
+                                    >
+                                        Create account
+                                    </Button>
+                                </Stack>
+                            </form>
+                        )}
+                    </Formik>
+                </Stack>
+            </AuthLayout>
+        </>
     );
 }

@@ -1,26 +1,52 @@
 import { TextField } from "@mui/material";
+import { useField } from "formik";
 
 export default function EcoInput({
     label,
     placeholder,
-    error = false,
-    helperText,
     type = "text",
     value,
+    onChange,
+    name,
     ...props
 }) {
+    let field = {};
+    let meta = {};
+
+    try {
+        if (name) {
+            [field, meta] = useField(name);
+        }
+    } catch {
+        field = {};
+        meta = {};
+    }
+
+    const isFormik = Boolean(field?.name);
+    const showError = isFormik && meta.touched && Boolean(meta.error);
+
     return (
         <TextField
+            {...props}
             fullWidth
             label={label}
-            value={value}
             placeholder={placeholder}
             type={type}
+            name={name}
+            value={isFormik ? field.value : value}
+            onChange={(e) => {
+                if (isFormik) {
+                    field.onChange(e);   // ✅ Formik update
+                }
+                if (onChange) {
+                    onChange(e);         // ✅ Custom logic
+                }
+            }}
             inputProps={{
                 ...(type === "number" && { step: "any" })
             }}
-            error={error}
-            helperText={helperText}
+            error={showError}
+            helperText={showError ? meta.error : ""}
             InputLabelProps={{
                 shrink: true
             }}
@@ -30,19 +56,19 @@ export default function EcoInput({
                     backgroundColor: "background.paper",
 
                     "& fieldset": {
-                        borderColor: error
+                        borderColor: showError
                             ? "error.main"
                             : "rgba(15, 123, 107, 0.25)"
                     },
 
                     "&:hover fieldset": {
-                        borderColor: error
+                        borderColor: showError
                             ? "error.main"
                             : "primary.main"
                     },
 
                     "&.Mui-focused fieldset": {
-                        borderColor: error
+                        borderColor: showError
                             ? "error.main"
                             : "primary.main",
                         borderWidth: "2px"
@@ -52,7 +78,7 @@ export default function EcoInput({
                 "& .MuiInputLabel-root": {
                     fontWeight: 600,
                     fontSize: "13px",
-                    color: error ? "error.main" : "text.secondary"
+                    color: showError ? "error.main" : "text.secondary"
                 },
 
                 "& .MuiInputBase-input": {
@@ -65,7 +91,6 @@ export default function EcoInput({
                     fontSize: "12px"
                 }
             }}
-            {...props}
         />
     );
 }

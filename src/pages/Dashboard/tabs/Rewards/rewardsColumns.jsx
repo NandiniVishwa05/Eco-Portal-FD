@@ -35,14 +35,14 @@ export const rewardsColumns = {
                 <Button
                     size="small"
                     variant="contained"
-                    onClick={() => onRedeem(row.id,row.ecopoints)}
+                    onClick={() => onRedeem(row.id, row.ecopoints, row.name)}
                     sx={{
                         borderRadius: "12px",
                         textTransform: "none",
                         padding: "6px 12px",
                         fontWeight: 600,
                         fontSize: 14,
-                        
+
                     }}
                 >
                     Redeem

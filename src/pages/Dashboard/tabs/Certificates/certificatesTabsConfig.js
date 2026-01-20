@@ -27,11 +27,11 @@ export const certificatesTabsConfig = {
         type: "government",
         roles: [
             "individual",
-            "college",
+            // "college",
             "manufacturer",
             "retailer",
             "seller",
-            "institution"
+            // "institution"
         ]
     }
 };

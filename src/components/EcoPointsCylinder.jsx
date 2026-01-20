@@ -1,6 +1,7 @@
 import { Box, Typography, Stack } from "@mui/material";
 
 export default function EcoPointsCylinder({
+  label = "Ecometer",
   collected = 0,
   available = 4500,
   used = 1800,
@@ -21,7 +22,7 @@ export default function EcoPointsCylinder({
     >
       {/* Title */}
       <Typography fontWeight={600} mb={1}>
-        EcoPoints Meter
+        {label}
       </Typography>
 
       {/* Cylinder */}
