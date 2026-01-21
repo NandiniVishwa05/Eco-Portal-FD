@@ -314,7 +314,10 @@ export default function CreateProductModal({ open, onClose, onSuccess, onError }
                     manufacturing_co2: template.lifecycle.manufacturing_co2_kg,
                     transport_co2: template.lifecycle.transport_co2_kg,
                     end_of_life_co2: template.lifecycle.end_of_life_co2_kg,
-                    emission_factor: template.lifecycle.emission_factor
+                    emission_factor: template.lifecycle.emission_factor,
+                    washing_co2:template.lifecycle.washing_co2_kg,
+                    expected_uses:template.lifecycle.expected_uses,
+                    is_reusable:template.lifecycle.is_reusable
                 };
             }
 
