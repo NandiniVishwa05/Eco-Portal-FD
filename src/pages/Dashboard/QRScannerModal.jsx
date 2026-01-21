@@ -213,7 +213,10 @@ export default function QRScannerModal({ open, onClose, onScanSuccess }) {
                     <Box
                         id="qr-reader"
                         sx={{
+                            display: "flex",
+                            justifyContent: "center",
                             width: 280,
+                            height: 280,
                             maxWidth: "100%",
                             "& video": {
                                 width: "100%",
