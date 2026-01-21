@@ -6,20 +6,28 @@ function LCATracker({ data }) {
     console.log(data);
 
     return (
-        <div className="space-y-10 flex justify-between w-full mb-10">
+        <div className="w-full mb-10 flex flex-col lg:flex-row gap-10">
             {/* ---------- Product Info ---------- */}
-            <div className='flex flex-col gap-10'>
+            <div className="flex flex-col gap-6 lg:gap-10 lg:w-1/2">
                 <h2 className="text-3xl font-extrabold text-eco-800">
                     {data?.name}
                     {/* Reusable Bamboo Water Bottle */}
                 </h2>
 
                 <img
-                    // src={selectedProduct.image}
-                    src={`${import.meta.env.VITE_BACKEND_API_URL}${data?.image}` || null}
+                    src={`${import.meta.env.VITE_BACKEND_API_URL}${data?.image}`}
                     alt={data?.name}
-                    className="max-w-md shadow-lg"
+                    className="
+                        w-full
+                        max-w-xs
+                        sm:max-w-sm
+                        md:max-w-md
+                        mx-auto
+                        rounded-2xl
+                        shadow-lg
+                    "
                 />
+
 
                 <p className="text-lg font-semibold text-eco-700">
                     Cost: ₹{data?.price}
@@ -35,8 +43,17 @@ function LCATracker({ data }) {
                     </ul>
                 </div>
             </div>
-            <div className="space-y-6">
-                <div className="bg-gradient-to-br from-eco-800 via-eco-700 to-slate-900 text-white p-10 rounded-[2rem] shadow-2xl relative overflow-hidden group hover:scale-[1.02] transition-transform duration-500">
+            <div className="lg:w-1/2 flex justify-center">
+                <div className="
+                    bg-gradient-to-br
+                    from-eco-800 via-eco-700 to-slate-900
+                    text-white
+                    p-6 sm:p-8 md:p-10
+                    rounded-[2rem]
+                    shadow-2xl
+                    relative
+                    overflow-hidden
+                    ">
                     {/* Decorative Elements */}
                     <div className="absolute top-0 right-0 w-64 h-64 bg-solar-500/20 rounded-full blur-3xl -mr-20 -mt-20 group-hover:bg-solar-500/30 transition-colors"></div>
                     <div className="absolute bottom-0 left-0 w-40 h-40 bg-sky-500/20 rounded-full blur-2xl -ml-10 -mb-10 group-hover:bg-sky-500/30 transition-colors"></div>

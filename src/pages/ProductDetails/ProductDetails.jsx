@@ -110,38 +110,68 @@ function ProductDetails() {
             <div className="min-h-screen flex flex-col font-sans text-slate-800 bg-gradient-to-br from-eco-100 via-sky-50 to-eco-50 selection:bg-eco-200">
                 {/* Header */}
                 <header className="bg-white/70 backdrop-blur-xl text-eco-900 shadow-lg shadow-eco-100/20 sticky top-0 z-50 border-b border-white/50 transition-all duration-300">
-                    <div className="max-w-7xl mx-auto px-4 py-4 md:py-5">
-                        <div className="flex flex-col md:flex-row justify-start items-center gap-4">
-                            <div>
-                                <Box
-                                    sx={{
-                                        width: "100px",
-                                        height: "80px",
-                                        borderRadius: "14px",
-                                        background: "linear-gradient(180deg,#e7fff3,#d1fbec)",
-                                        display: "flex",
-                                        alignItems: "center",
-                                        justifyContent: "center",
-                                        fontSize: "26px",
-                                        boxShadow: "0 12px 30px rgba(10,60,50,0.06)",
-                                        flexShrink: 0,
-                                    }}
-                                >
-                                    <img src={logo} alt="AVANI-C" />
-                                </Box>
-                            </div>
-                            <div className="text-center md:text-left group cursor-pointer">
-                                <h1 className="text-2xl md:text-4xl font-extrabold tracking-tight bg-gradient-to-r from-eco-700 via-eco-600 to-sky-600 bg-clip-text text-transparent drop-shadow-sm group-hover:scale-[1.01] transition-transform">
+                    <div className="max-w-7xl mx-auto px-4 py-3 sm:py-4">
+
+                        {/* MOBILE HEADER */}
+                        <div className="flex items-center  sm:hidden">
+                            <Box
+                                sx={{
+                                    width: 72,
+                                    height: 52,
+                                    borderRadius: "12px",
+                                    // background: "linear-gradient(180deg,#e7fff3,#d1fbec)",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    // boxShadow: "0 6px 16px rgba(10,60,50,0.08)",
+                                    flexShrink: 0,
+                                }}
+                            >
+                                <img src={logo} alt="AVANI-C" className="w-18 h-14" />
+                            </Box>
+
+                            <div className="leading-tight">
+                                <h1 className="text-lg font-extrabold tracking-tight bg-gradient-to-r from-eco-700 via-eco-600 to-sky-600 bg-clip-text text-transparent">
                                     AVANI-C LCA Tracker
                                 </h1>
-                                <p className="text-eco-700/80 text-xs md:text-sm mt-1 font-medium tracking-wide flex items-center justify-center md:justify-start gap-2">
-                                    {/* <Sparkles className="w-3 h-3 text-solar-500 animate-pulse" /> */}
+                                <p className="text-[11px] text-eco-700/80 font-medium">
                                     An Incentive-Powered Digital Framework
                                 </p>
                             </div>
                         </div>
+
+                        {/* DESKTOP HEADER (UNCHANGED DESIGN) */}
+                        <div className="hidden sm:flex flex-row justify-start items-center gap-4">
+                            <Box
+                                sx={{
+                                    width: "100px",
+                                    height: "80px",
+                                    borderRadius: "14px",
+                                    background: "linear-gradient(180deg,#e7fff3,#d1fbec)",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    fontSize: "26px",
+                                    boxShadow: "0 12px 30px rgba(10,60,50,0.06)",
+                                    flexShrink: 0,
+                                }}
+                            >
+                                <img src={logo} alt="AVANI-C" />
+                            </Box>
+
+                            <div className="text-left group cursor-pointer">
+                                <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight bg-gradient-to-r from-eco-700 via-eco-600 to-sky-600 bg-clip-text text-transparent drop-shadow-sm group-hover:scale-[1.01] transition-transform">
+                                    AVANI-C LCA Tracker
+                                </h1>
+                                <p className="text-eco-700/80 text-sm mt-1 font-medium tracking-wide">
+                                    An Incentive-Powered Digital Framework
+                                </p>
+                            </div>
+                        </div>
+
                     </div>
                 </header>
+
 
                 {/* Navigation (Manual Tabs for Simulator & Research) */}
                 {/* <nav className="bg-white/30 backdrop-blur-md shadow-sm z-40 border-b border-white/20 sticky top-[85px] md:top-[96px]">
@@ -160,7 +190,7 @@ function ProductDetails() {
 
                 {/* Main Content */}
                 <main className="flex-grow max-w-7xl mx-auto w-full px-4 py-8 transition-all duration-500 ease-in-out">
-                    <div className="animate-fadeIn space-y-8 mb-8">
+                    <div className="animate-fadeIn space-y-6 sm:space-y-8 mb-8">
                         <div className="text-center md:text-left space-y-3 relative overflow-hidden p-6 rounded-3xl bg-gradient-to-r from-solar-100/30 to-eco-100/30 border border-solar-100/50 backdrop-blur-sm">
                             <h2 className="text-3xl font-extrabold text-eco-900 inline-block">
                                 Your Impact. <span className="text-solar-500">Your Rewards.</span>
@@ -180,16 +210,18 @@ function ProductDetails() {
                                 Blockchain Chart (CO₂)
                             </h3>
 
-                            <ResponsiveContainer width="100%" height={260}>
-                                <BarChart data={lifecycleChartData}>
-                                    <CartesianGrid strokeDasharray="3 3" />
-                                    <XAxis dataKey="name" />
-                                    <YAxis />
-                                    <Tooltip />
-                                    <Legend />
-                                    <Bar dataKey="eco_friendly" fill="#34d399" />
-                                </BarChart>
-                            </ResponsiveContainer>
+                            <div className="h-[220px] sm:h-[260px]">
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <BarChart data={lifecycleChartData}>
+                                        <CartesianGrid strokeDasharray="3 3" />
+                                        <XAxis dataKey="name" />
+                                        <YAxis />
+                                        <Tooltip />
+                                        <Legend />
+                                        <Bar dataKey="eco_friendly" fill="#34d399" />
+                                    </BarChart>
+                                </ResponsiveContainer>
+                            </div>
                         </div>
                     </div>
 
@@ -203,7 +235,7 @@ function ProductDetails() {
                                 </h4>
                             </div>
 
-                            <div className="grid grid-cols-3 gap-4 text-sm">
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
                                 <div className="text-eco-600 font-bold">
                                     Eco-Friendly: {productData?.lifecycle?.raw_material_weight * productData?.lifecycle?.emission_factor}
                                 </div>
@@ -218,7 +250,7 @@ function ProductDetails() {
                                 </h4>
                             </div>
 
-                            <div className="grid grid-cols-3 gap-4 text-sm">
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
                                 <div className="text-eco-600 font-bold">
                                     Eco-Friendly: {productData?.lifecycle?.manufacturing_co2}
                                 </div>
@@ -233,7 +265,7 @@ function ProductDetails() {
                                 </h4>
                             </div>
 
-                            <div className="grid grid-cols-3 gap-4 text-sm">
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
                                 <div className="text-eco-600 font-bold">
                                     Eco-Friendly: {productData?.lifecycle?.transport_co2}
                                 </div>
@@ -249,7 +281,7 @@ function ProductDetails() {
                                     </h4>
                                 </div>
 
-                                <div className="grid grid-cols-3 gap-4 text-sm">
+                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
                                     <div className="text-eco-600 font-bold">
                                         Eco-Friendly: {productData?.lifecycle?.washing_co2}
                                     </div>
@@ -265,7 +297,7 @@ function ProductDetails() {
                                 </h4>
                             </div>
 
-                            <div className="grid grid-cols-3 gap-4 text-sm">
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
                                 <div className="text-eco-600 font-bold">
                                     Eco-Friendly: {productData?.lifecycle?.end_of_life_co2}
                                 </div>
@@ -286,7 +318,7 @@ function ProductDetails() {
                                 </div>
                             </div>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
                             {recommendedProducts.map((product) => {
                                 // Ensure we append parameters correctly to the existing query string
                                 // const productUrl = `${BASE_URL}&product=${product.id}&title=${encodeURIComponent(product.name)}&id=${product.uniqueId}`;
