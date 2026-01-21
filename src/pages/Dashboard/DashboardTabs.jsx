@@ -9,13 +9,23 @@ export default function DashboardTabs() {
     if (!config) return null;
 
     return (
-        <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
+        <Stack
+            direction="row"
+            spacing={1}
+            sx={{
+                mb: 2,
+                overflowX: "auto",
+                whiteSpace: "nowrap",
+                "&::-webkit-scrollbar": { display: "none" }
+            }}
+        >
             {config.tabs.map(tab => (
                 <Button
                     key={tab}
                     component={NavLink}
                     to={`/dashboard/${role}/${tab}`}
                     sx={{
+                        flexShrink: 0,
                         textTransform: "capitalize",
                         fontWeight: 700,
                         borderRadius: "20px",
@@ -24,6 +34,7 @@ export default function DashboardTabs() {
                         color: "#000",
                         fontSize: 16,
                         lineHeight: 1.5,
+                        minWidth: "max-content",
                         "&.active": {
                             backgroundColor: "primary.main",
                             color: "#fff"

@@ -9,7 +9,7 @@ function StatCard({ label, value }) {
             p: 1.5,
             borderRadius: "12px",
             background: theme.custom.gradients.button,
-            minWidth: 200,
+            minWidth: { xs: "100%", sm: 200 },
             boxShadow: theme.shadows[0]
         }}
         >
@@ -29,7 +29,7 @@ export default function DashboardStats({ stats }) {
     return (
         <Stack
             direction={{ xs: "column", sm: "row" }}
-            spacing={2}
+            spacing={1.5}
             sx={{ mb: 1.5 }}
         >
             {stats.includes("co2") && (

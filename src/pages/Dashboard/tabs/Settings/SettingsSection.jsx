@@ -2,7 +2,13 @@ import { Box, Typography } from "@mui/material";
 
 export default function SettingsSection({ id, title, description, children }) {
     return (
-        <Box id={id} sx={{ scrollMarginTop: 32 }}>
+        <Box
+            id={id}
+            sx={{
+                scrollMarginTop: 80,
+                mb: { xs: 4, sm: 0 }
+            }}
+        >
             <Typography fontSize={20} fontWeight={600} sx={{ mb: 0.5 }}>
                 {title}
             </Typography>

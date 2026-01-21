@@ -11,6 +11,13 @@ import { NavLink, useParams } from "react-router-dom";
 import { DASHBOARD_CONFIG } from "./dashboardConfig";
 import EcoAlert from "../../components/common/EcoAlertDialog";
 // import QRScannerModal from "./QRScannerModal";
+import {
+    IconButton,
+    Menu,
+    MenuItem,
+    useMediaQuery
+} from "@mui/material";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 export default function DashboardHeader({ title }) {
     const { user, userType } = useSelector(state => state.auth);
@@ -25,6 +32,8 @@ export default function DashboardHeader({ title }) {
         type: "success",
         message: ""
     });
+    const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+    const [menuAnchor, setMenuAnchor] = useState(null);
 
     const identifier =
         userType === "government"
@@ -67,9 +76,9 @@ export default function DashboardHeader({ title }) {
             >
                 <Stack
                     direction="row"
+                    spacing={1}
                     justifyContent="space-between"
                     alignItems="center"
-                    spacing={0.5}
                 >
                     <Box>
                         <Typography variant="h5" fontWeight={800}>
@@ -79,70 +88,124 @@ export default function DashboardHeader({ title }) {
                             Analytics · Activities · Leaderboards · Hotspots · Rewards
                         </Typography>
                     </Box>
-                    <Stack direction="row" spacing={1}>
-                        {userType !== "government" && (
+                    {!isMobile && (
+                        <Stack direction="row" spacing={1}>
+                            {userType !== "government" && (
+                                <Button
+                                    variant="contained"
+                                    sx={{
+                                        background: theme.custom.gradients.button,
+                                        borderRadius: "12px",
+                                        border: "1px solid #ebebebff",
+                                        color: theme.palette.text.primary,
+                                        p: "6px 10px"
+                                    }}
+                                    onClick={() => setOpenQRScanner(true)}
+                                >
+                                    QR Scan
+                                </Button>
+                            )}
+                            {userType !== "government" && (
+                                <Button
+                                    variant="contained"
+                                    component={NavLink}
+                                    to={`/dashboard/${role}/settings`}
+                                    sx={{
+                                        background: theme.custom.gradients.button,
+                                        borderRadius: "12px",
+                                        border: "1px solid #ebebebff",
+                                        color: theme.palette.text.primary,
+                                        p: "6px 10px"
+                                    }}
+                                // onClick={() => setOpenQRScanner(true)}
+                                >
+                                    Settings
+                                </Button>
+                            )}
+                            {userType === "organization" && user?.organization_type !== "college" && (
+                                <Button
+                                    variant="contained"
+                                    onClick={() => setOpenCreateProduct(true)}
+                                    sx={{
+                                        borderRadius: "12px",
+                                        p: "6px 10px",
+                                        textTransform: "none",
+                                        fontWeight: 600
+                                    }}
+                                >
+                                    Create Product
+                                </Button>
+                            )}
                             <Button
                                 variant="contained"
                                 sx={{
-                                    background: theme.custom.gradients.button,
+                                    backgroundColor: theme.custom.heatmap.high,
                                     borderRadius: "12px",
-                                    border: "1px solid #ebebebff",
-                                    color: theme.palette.text.primary,
-                                    p: "6px 10px"
-                                }}
-                                onClick={() => setOpenQRScanner(true)}
-                            >
-                                QR Scan
-                            </Button>
-                        )}
-                        {userType !== "government" && (
-                            <Button
-                                variant="contained"
-                                component={NavLink}
-                                to={`/dashboard/${role}/settings`}
-                                sx={{
-                                    background: theme.custom.gradients.button,
-                                    borderRadius: "12px",
-                                    border: "1px solid #ebebebff",
-                                    color: theme.palette.text.primary,
-                                    p: "6px 10px"
-                                }}
-                            // onClick={() => setOpenQRScanner(true)}
-                            >
-                                Settings
-                            </Button>
-                        )}
-                        {userType === "organization" && user?.organization_type !== "college" && (
-                            <Button
-                                variant="contained"
-                                onClick={() => setOpenCreateProduct(true)}
-                                sx={{
-                                    borderRadius: "12px",
-                                    p: "6px 10px",
+                                    p: "6px 14px",
                                     textTransform: "none",
                                     fontWeight: 600
                                 }}
+                                onClick={() => {
+                                    logout();
+                                    dispatch(logoutAction());
+                                }}
                             >
-                                Create Product
+                                Logout
                             </Button>
-                        )}
-                        <Button
-                            variant="contained"
-                            sx={{
-                                backgroundColor: theme.custom.heatmap.high,
-                                borderRadius: "12px",
-                                p: "6px 14px",
-                                textTransform: "none",
-                                fontWeight: 600
-                            }}
-                            onClick={() => {
-                                logout();
-                                dispatch(logoutAction());
-                            }}
-                        >
-                            Logout
-                        </Button>
-                    </Stack>
+                        </Stack>
+                    )}
+                    {isMobile && (
+                        <>
+                            <IconButton onClick={(e) => setMenuAnchor(e.currentTarget)}>
+                                <MoreVertIcon />
+                            </IconButton>
+
+                            <Menu
+                                anchorEl={menuAnchor}
+                                open={Boolean(menuAnchor)}
+                                onClose={() => setMenuAnchor(null)}
+                                anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                                transformOrigin={{ vertical: "top", horizontal: "right" }}
+                            >
+                                {userType !== "government" && (
+                                    <MenuItem onClick={() => {
+                                        setMenuAnchor(null);
+                                        setOpenQRScanner(true);
+                                    }}>
+                                        QR Scan
+                                    </MenuItem>
+                                )}
+
+                                {userType !== "government" && (
+                                    <MenuItem
+                                        component={NavLink}
+                                        to={`/dashboard/${role}/settings`}
+                                        onClick={() => setMenuAnchor(null)}
+                                    >
+                                        Settings
+                                    </MenuItem>
+                                )}
+
+                                {userType === "organization" &&
+                                    user?.organization_type !== "college" && (
+                                        <MenuItem onClick={() => {
+                                            setMenuAnchor(null);
+                                            setOpenCreateProduct(true);
+                                        }}>
+                                            Create Product
+                                        </MenuItem>
+                                    )}
+
+                                <MenuItem onClick={() => {
+                                    setMenuAnchor(null);
+                                    logout();
+                                    dispatch(logoutAction());
+                                }}>
+                                    Logout
+                                </MenuItem>
+                            </Menu>
+                        </>
+                    )}
                 </Stack>
                 <Stack
                     mt={1.5}
@@ -150,25 +213,26 @@ export default function DashboardHeader({ title }) {
                     alignItems="center"
                     sx={{
                         boxShadow: theme.shadows[0],
-                        p: "12px",
+                        p: { xs: "10px", sm: "12px" },
+                        height: { xs: "auto", sm: "118px" },
+                        gap: 1.5,
                         borderRadius: "12px",
                         border: "1px solid #06281e08",
                         background: theme.custom.gradients.card,
-                        height: "118px"
                     }}
                 >
                     <Stack direction="row" spacing={1.5}>
                         <Box
                             sx={{
-                                width: 72,
-                                height: 72,
+                                width: { xs: 56, sm: 72 },
+                                height: { xs: 56, sm: 72 },
+                                fontSize: { xs: 18, sm: 22 },
                                 borderRadius: "14px",
                                 background: (theme) => theme.custom.gradients.logo,
                                 display: "flex",
                                 alignItems: "center",
                                 justifyContent: "center",
                                 fontWeight: 700,
-                                fontSize: 22,
                                 color: "primary.main"
                             }}
                         >

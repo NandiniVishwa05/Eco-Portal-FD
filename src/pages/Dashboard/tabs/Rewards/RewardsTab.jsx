@@ -177,6 +177,7 @@ export default function RewardsTab() {
                             fontSize: 14,
                             borderRadius: 3,
                             height: 36,
+                            minWidth: "max-content",
                         }}
                     >
                         Create Reward
@@ -315,6 +316,7 @@ export default function RewardsTab() {
                             fontSize: 14,
                             borderRadius: 3,
                             height: 36,
+                            minWidth: "max-content",
                         }}
                     >
                         Create Reward

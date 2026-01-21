@@ -1,4 +1,4 @@
-import { Box, Stack, Divider, Button, Typography } from "@mui/material";
+import { Box, Stack, Divider, Button, Typography, useMediaQuery } from "@mui/material";
 import SettingsSidebar from "./SettingsSidebar";
 import SettingsSection from "./SettingsSection";
 import SettingsRow from "./SettingsRow";
@@ -10,6 +10,8 @@ import EcoInput from "../../../../components/common/EcoInput";
 import EcoSelect from "../../../../components/common/EcoSelect";
 import { useState } from "react";
 import { useSelector } from "react-redux";
+import { useTheme } from "@mui/material";
+
 
 const SECTIONS = [
     { id: "account", label: "Account Settings" },
@@ -37,6 +39,8 @@ export function getInitials(name = "") {
 
 export default function SettingsPage() {
     const mode = useSelector((state) => state.theme.mode);
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
     const dispatch = useDispatch();
     const scrollTo = (id) => {
         document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
@@ -49,10 +53,28 @@ export default function SettingsPage() {
         accountType: userType
     });
     return (
-        <Box sx={{ display: "flex", height: "calc(100vh - 550px)" }}>
-            <SettingsSidebar sections={SECTIONS} onSelect={scrollTo} />
-
-            <Box sx={{ flex: 1, overflowY: "auto", pl: 3 }}>
+        <Box
+            sx={{
+                display: "flex",
+                flexDirection: { xs: "column", sm: "row" },
+                minHeight: "100%",
+            }}
+        >
+            {!isMobile &&
+                < SettingsSidebar
+                    sections={SECTIONS}
+                    onSelect={scrollTo}
+                    isMobile={isMobile}
+                />
+            }
+            <Box
+                sx={{
+                    flex: 1,
+                    overflowY: "auto",
+                    pl: { xs: 0, sm: 3 },
+                    pt: { xs: 2, sm: 0 }
+                }}
+            >
                 <SettingsSection
                     id="account"
                     title="Account Settings"

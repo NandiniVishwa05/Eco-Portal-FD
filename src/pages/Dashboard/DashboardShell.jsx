@@ -51,44 +51,55 @@ export default function DashboardShell() {
                         }}
                     >
                         <DashboardHeader title={config.title} />
-                        <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-                            <Box>
+                        <Box
+                            sx={{
+                                display: "flex",
+                                flexDirection: { xs: "column-reverse", md: "row" },
+                                gap: 2,
+                                justifyContent: "space-between"
+                            }}
+                        >
+                            {/* LEFT SIDE */}
+                            <Box sx={{ flex: 1 }}>
                                 <DashboardStats stats={config.stats} />
                                 <DashboardTabs />
                             </Box>
-                            <Box>
-                                {/* Graph code should be here */}
-                                {role === "individual" &&
-                                    <Box sx={{
-                                        display: "flex",
-                                        alignItems: "center",
-                                        gap: 5
 
-                                    }}>
-                                        {/* <EcoPointsPieChart
-                                            collected={user.total_ecopoints}
-                                            available={user.ecopoints}
-                                            used={user.redeemed_ecopoints}
-                                        /> */}
+                            {/* RIGHT SIDE (Charts) */}
+                            <Box
+                                sx={{
+                                    width: { xs: "100%", md: "auto" },
+                                    display: "flex",
+                                    justifyContent: "center"
+                                }}
+                            >
+                                {role === "individual" && (
+                                    <Box
+                                        sx={{
+                                            display: "flex",
+                                            flexDirection: { xs: "column", sm: "row" },
+                                            alignItems: "center",
+                                            gap: 3
+                                        }}
+                                    >
                                         <EcoPointsGaugeChart
                                             label="EcoPoints"
                                             ecoPoints={user.ecopoints || 0}
                                         />
                                         <EcoPointsCylinder
                                             label="Ecometer"
-                                            // collected={user.total_ecopoints}
                                             available={user.ecopoints}
                                             used={user.redeemed_ecopoints}
                                         />
                                     </Box>
+                                )}
 
-                                }
-                                {role === "organization" &&
+                                {role === "organization" && (
                                     <EcoPointsGaugeChart
                                         label="CO₂ METER"
                                         ecoPoints={user.ecopoints || 0}
                                     />
-                                }
+                                )}
                             </Box>
                         </Box>
                         <Outlet />

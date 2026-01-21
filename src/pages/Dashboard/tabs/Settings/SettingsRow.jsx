@@ -5,11 +5,18 @@ export default function SettingsRow({ title, subtitle, action }) {
         <Box
             sx={{
                 display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center"
+                flexDirection: { xs: "column", sm: "row" },
+                alignItems: { xs: "flex-start", sm: "center" },
+                gap: 1
             }}
         >
-            <Box>
+            <Box
+                sx={{
+                    flexDirection: { xs: "column", sm: "row" },
+                    alignItems: { xs: "flex-start", sm: "center" },
+                    gap: 2
+                }}
+            >
                 <Typography fontWeight={600}>{title}</Typography>
                 {subtitle && (
                     <Typography fontSize={13} color="text.secondary">
