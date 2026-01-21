@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from "react";
 import {
     Dialog,
     DialogTitle,
@@ -10,208 +10,202 @@ import {
     Alert,
     CircularProgress,
     IconButton
-} from '@mui/material';
-import { Html5Qrcode } from 'html5-qrcode';
-import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner';
-import CloseIcon from '@mui/icons-material/Close';
+} from "@mui/material";
+import { Html5Qrcode } from "html5-qrcode";
+import QrCodeScannerIcon from "@mui/icons-material/QrCodeScanner";
+import CloseIcon from "@mui/icons-material/Close";
+import CameraswitchIcon from "@mui/icons-material/Cameraswitch";
 
 export default function QRScannerModal({ open, onClose, onScanSuccess }) {
-    const [scanning, setScanning] = useState(false);
-    const [error, setError] = useState(null);
-    const [scannedData, setScannedData] = useState(null);
-    const [cameraReady, setCameraReady] = useState(false);
     const html5QrCodeRef = useRef(null);
     const isStartingRef = useRef(false);
 
-    useEffect(() => {
-        if (open) {
-            // Wait for the dialog to fully render before starting camera
-            const timer = setTimeout(() => {
-                startScanner();
-            }, 300);
-            
-            return () => {
-                clearTimeout(timer);
-                stopScanner();
-            };
-        } else {
-            stopScanner();
-        }
-    }, [open]);
+    const [scanning, setScanning] = useState(false);
+    const [cameraReady, setCameraReady] = useState(false);
+    const [error, setError] = useState(null);
+    const [scannedData, setScannedData] = useState(null);
 
-    const startScanner = async () => {
-        if (isStartingRef.current || html5QrCodeRef.current) {
-            return; // Prevent multiple starts
+    const [cameras, setCameras] = useState([]);
+    const [currentCameraIndex, setCurrentCameraIndex] = useState(0);
+
+    /* -------------------- EFFECT -------------------- */
+    useEffect(() => {
+        if (!open) {
+            stopScanner();
+            return;
         }
+
+        const timer = setTimeout(startScanner, 300);
+        return () => {
+            clearTimeout(timer);
+            stopScanner();
+        };
+    }, [open, currentCameraIndex]);
+
+    /* -------------------- START SCANNER -------------------- */
+    const startScanner = async () => {
+        if (isStartingRef.current || html5QrCodeRef.current) return;
 
         try {
             isStartingRef.current = true;
             setError(null);
             setCameraReady(false);
 
-            // Check if element exists
             const element = document.getElementById("qr-reader");
-            if (!element) {
-                throw new Error("Scanner element not found");
+            if (!element) throw new Error("Scanner container not found");
+
+            const devices = await Html5Qrcode.getCameras();
+            if (!devices || !devices.length) {
+                throw new Error("No camera devices found");
             }
+
+            setCameras(devices);
+
+            const cameraId =
+                devices[currentCameraIndex]?.id || devices[0].id;
 
             const html5QrCode = new Html5Qrcode("qr-reader");
             html5QrCodeRef.current = html5QrCode;
-
-            // Try to get camera devices first
-            const devices = await Html5Qrcode.getCameras();
-            
-            if (!devices || devices.length === 0) {
-                throw new Error("No cameras found on this device");
-            }
-
-            // Start with back camera (environment) or first available camera
-            const cameraId = devices.length > 1 ? devices[1].id : devices[0].id;
 
             await html5QrCode.start(
                 cameraId,
                 {
                     fps: 10,
                     qrbox: { width: 250, height: 250 },
-                    aspectRatio: 1.0
+                    aspectRatio: 1
                 },
-                (decodedText) => {
-                    handleScanSuccess(decodedText);
-                },
-                (errorMessage) => {
-                    // Ignore scanning errors while camera is active
-                }
+                handleScanSuccess,
+                () => { }
             );
 
             setScanning(true);
             setCameraReady(true);
-            isStartingRef.current = false;
         } catch (err) {
-            console.error("Error starting scanner:", err);
+            console.error(err);
+            setError(
+                err.message?.includes("permission")
+                    ? "Camera permission denied."
+                    : "Unable to access camera."
+            );
+        } finally {
             isStartingRef.current = false;
-            
-            let errorMsg = "Unable to access camera. Please check permissions.";
-            
-            if (err.message?.includes("NotAllowedError")) {
-                errorMsg = "Camera access denied. Please allow camera permissions in your browser settings.";
-            } else if (err.message?.includes("NotFoundError")) {
-                errorMsg = "No camera found on this device.";
-            } else if (err.message?.includes("NotReadableError")) {
-                errorMsg = "Camera is being used by another application.";
-            }
-            
-            setError(errorMsg);
-            setScanning(false);
         }
     };
 
+    /* -------------------- STOP SCANNER -------------------- */
     const stopScanner = async () => {
-        if (html5QrCodeRef.current && scanning) {
-            try {
+        try {
+            if (html5QrCodeRef.current) {
                 await html5QrCodeRef.current.stop();
                 await html5QrCodeRef.current.clear();
-            } catch (err) {
-                console.error("Error stopping scanner:", err);
             }
+        } catch (err) {
+            console.warn("Stop scanner error:", err);
+        } finally {
+            html5QrCodeRef.current = null;
+            setScanning(false);
+            setCameraReady(false);
         }
-        html5QrCodeRef.current = null;
-        isStartingRef.current = false;
-        setScanning(false);
-        setCameraReady(false);
     };
 
+    /* -------------------- SCAN SUCCESS -------------------- */
     const handleScanSuccess = (decodedText) => {
         setScannedData(decodedText);
         stopScanner();
-        
-        if (onScanSuccess) {
-            onScanSuccess(decodedText);
+
+        // 🔗 Auto redirect if URL
+        if (/^https?:\/\//i.test(decodedText)) {
+            window.open(decodedText, "_blank", "noopener,noreferrer");
+            return;
         }
+
+        onScanSuccess?.(decodedText);
     };
 
+    /* -------------------- SWITCH CAMERA -------------------- */
+    const handleSwitchCamera = async () => {
+        if (cameras.length <= 1) return;
+        setCurrentCameraIndex(
+            (prev) => (prev + 1) % cameras.length
+        );
+    };
+
+    /* -------------------- CLOSE -------------------- */
     const handleClose = () => {
         stopScanner();
-        setScannedData(null);
         setError(null);
+        setScannedData(null);
         onClose();
     };
 
     const handleRetry = () => {
-        setScannedData(null);
         setError(null);
+        setScannedData(null);
         startScanner();
     };
 
+    /* -------------------- UI -------------------- */
     return (
         <Dialog
             open={open}
             onClose={handleClose}
             maxWidth="sm"
             fullWidth
-            PaperProps={{
-                sx: {
-                    borderRadius: '16px',
-                    p: 2
-                }
-            }}
+            PaperProps={{ sx: { borderRadius: 4, p: 2 } }}
         >
-            <DialogTitle sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', pb: 2 }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <QrCodeScannerIcon sx={{ fontSize: 28, color: 'primary.main' }} />
-                    <Typography fontSize={20} fontWeight={700}>
-                        Scan QR Code
-                    </Typography>
+            <DialogTitle
+                sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between"
+                }}
+            >
+                <Box display="flex" alignItems="center" gap={1}>
+                    <QrCodeScannerIcon color="primary" />
+                    <Typography fontWeight={700}>Scan QR Code</Typography>
                 </Box>
-                <IconButton onClick={handleClose} size="small">
-                    <CloseIcon />
-                </IconButton>
+
+                <Box>
+                    {cameras.length > 1 && (
+                        <IconButton onClick={handleSwitchCamera}>
+                            <CameraswitchIcon />
+                        </IconButton>
+                    )}
+                    <IconButton onClick={handleClose}>
+                        <CloseIcon />
+                    </IconButton>
+                </Box>
             </DialogTitle>
 
             <DialogContent>
                 {error && (
-                    <Alert severity="error" sx={{ mb: 2, borderRadius: '12px' }}>
+                    <Alert severity="error" sx={{ mb: 2 }}>
                         {error}
                     </Alert>
                 )}
 
                 {scannedData && (
-                    <Alert severity="success" sx={{ mb: 2, borderRadius: '12px' }}>
-                        <Typography fontWeight={600} mb={0.5}>
-                            QR Code Scanned Successfully!
-                        </Typography>
-                        <Typography fontSize={14} sx={{ wordBreak: 'break-all' }}>
-                            {scannedData}
-                        </Typography>
+                    <Alert severity="success" sx={{ mb: 2 }}>
+                        QR scanned successfully
                     </Alert>
                 )}
 
+                {/* SCANNER CONTAINER */}
                 <Box
                     sx={{
-                        position: 'relative',
-                        width: '100%',
-                        minHeight: '300px',
-                        borderRadius: '12px',
-                        overflow: 'hidden',
-                        backgroundColor: 'background.default',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center'
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        minHeight: 320,
+                        borderRadius: 3,
+                        backgroundColor: "background.default"
                     }}
                 >
-                    {!cameraReady && !scannedData && !error && (
-                        <Box sx={{ textAlign: 'center', p: 3 }}>
-                            <QrCodeScannerIcon sx={{ fontSize: 64, color: 'text.disabled', mb: 2 }} />
-                            <Typography color="text.secondary" mb={2}>
-                                Initializing camera...
-                            </Typography>
+                    {!cameraReady && !error && !scannedData && (
+                        <Box textAlign="center">
                             <CircularProgress />
-                        </Box>
-                    )}
-
-                    {error && (
-                        <Box sx={{ textAlign: 'center', p: 3 }}>
-                            <Typography color="error" fontWeight={600}>
-                                Camera Error
+                            <Typography mt={2} color="text.secondary">
+                                Initializing camera…
                             </Typography>
                         </Box>
                     )}
@@ -219,67 +213,46 @@ export default function QRScannerModal({ open, onClose, onScanSuccess }) {
                     <Box
                         id="qr-reader"
                         sx={{
-                            width: '100%',
-                            '& video': {
-                                width: '100%',
-                                borderRadius: '12px'
+                            width: 280,
+                            maxWidth: "100%",
+                            "& video": {
+                                width: "100%",
+                                borderRadius: 3,
+                                objectFit: "cover"
                             },
-                            '& #qr-shaded-region': {
-                                border: '2px solid rgba(0, 255, 0, 0.5) !important'
+                            "& canvas": {
+                                width: "100% !important"
                             }
                         }}
                     />
                 </Box>
 
                 {scanning && cameraReady && (
-                    <Typography fontSize={14} color="text.secondary" textAlign="center" mt={2}>
-                        Position the QR code within the frame to scan
+                    <Typography
+                        fontSize={14}
+                        textAlign="center"
+                        color="text.secondary"
+                        mt={2}
+                    >
+                        Align QR code within the frame
                     </Typography>
                 )}
             </DialogContent>
 
-            <DialogActions sx={{ px: 3, pb: 2, gap: 1 }}>
-                {(scannedData || error) && (
+            <DialogActions>
+                {(error || scannedData) && (
                     <Button
+                        variant="outlined"
                         onClick={handleRetry}
-                        variant="outlined"
-                        sx={{
-                            borderRadius: '12px',
-                            textTransform: 'none',
-                            fontWeight: 600,
-                            flex: 1
-                        }}
+                        sx={{ borderRadius: 3, fontWeight: 600 }}
                     >
-                        {error ? 'Retry' : 'Scan Another'}
-                    </Button>
-                )}
-                {!scannedData && !error && (
-                    <Button
-                        onClick={handleClose}
-                        variant="outlined"
-                        sx={{
-                            borderRadius: '12px',
-                            textTransform: 'none',
-                            fontWeight: 600,
-                            flex: 1
-                        }}
-                    >
-                        Cancel
+                        Scan Again
                     </Button>
                 )}
                 <Button
-                    onClick={handleClose}
                     variant="contained"
-                    sx={{
-                        borderRadius: '12px',
-                        textTransform: 'none',
-                        fontWeight: 600,
-                        flex: 1,
-                        backgroundColor: 'primary.main',
-                        '&:hover': {
-                            backgroundColor: 'primary.dark'
-                        }
-                    }}
+                    onClick={handleClose}
+                    sx={{ borderRadius: 3, fontWeight: 600 }}
                 >
                     Done
                 </Button>
