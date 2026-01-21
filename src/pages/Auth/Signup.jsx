@@ -68,7 +68,7 @@ export default function Signup() {
 
             // success → redirect
             setTimeout(() => {
-                navigate("/auth/login", { state: { role } });
+                navigate("/", { state: { role } });
             }, 3000);
 
         } catch (error) {

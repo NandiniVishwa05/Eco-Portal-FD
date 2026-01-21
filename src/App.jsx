@@ -27,11 +27,28 @@ import QRScannerPage from "./pages/Scanner/QRScannerPage";
 import ReportsTab from "./pages/Dashboard/tabs/Reports/ReportsTab";
 import ProductDetails from "./pages/ProductDetails/ProductDetails";
 import SettingsPage from "./pages/Dashboard/tabs/Settings/SettingsPage";
-
+import { useDispatch } from "react-redux";
+import { useEffect } from "react";
+import api from './services/apiClient'
+import { loginSuccess, logout } from "./features/auth/authSlice";
 // temporary dashboard placeholder
 const Dashboard = () => <h1>Dashboard</h1>;
 
 export default function App() {
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        const bootstrapAuth = async () => {
+            try {
+                const res = await api.get("/auth/user-info");
+                dispatch(loginSuccess(res.data.data));
+            } catch {
+                dispatch(logout());
+            }
+        };
+
+        bootstrapAuth();
+    }, []);
     return (
         <BrowserRouter>
             <Routes>

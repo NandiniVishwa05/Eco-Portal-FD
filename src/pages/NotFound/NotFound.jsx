@@ -60,19 +60,6 @@ export default function NotFound() {
                     >
                         Go to Home
                     </Button>
-
-                    <Button
-                        variant="outlined"
-                        size="large"
-                        sx={{
-                            py: 1.4,
-                            fontWeight: 700,
-                            borderRadius: "12px"
-                        }}
-                        onClick={() => navigate("/auth/login")}
-                    >
-                        Go to Login
-                    </Button>
                 </Stack>
             </Stack>
         </AuthLayout>
