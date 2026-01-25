@@ -332,7 +332,7 @@ function ProductDetails() {
 
                                         <h4 className="font-bold text-eco-900 text-lg mb-1">{product?.name}</h4>
                                         <div className="relative z-10 bg-white p-4 rounded-2xl border border-eco-100 mb-5 shadow-sm group-hover:shadow-md transition-all">
-                                            <img src={`${import.meta.env.VITE_BACKEND_API_URL}${product?.image}`} alt={`Image for ${product?.name}`} className="w-40 h-40 object-contain mix-blend-multiply opacity-90 group-hover:opacity-100" />
+                                            <img src={product?.image} alt={`Image for ${product?.name}`} className="w-40 h-40 object-contain mix-blend-multiply opacity-90 group-hover:opacity-100" />
                                         </div>
 
                                         <div className="relative z-10 w-full">

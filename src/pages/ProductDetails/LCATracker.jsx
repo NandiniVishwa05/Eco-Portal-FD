@@ -15,7 +15,7 @@ function LCATracker({ data }) {
                 </h2>
 
                 <img
-                    src={`${import.meta.env.VITE_BACKEND_API_URL}${data?.image}`}
+                    src={data?.image}
                     alt={data?.name}
                     className="
                         w-full
@@ -43,7 +43,7 @@ function LCATracker({ data }) {
                     </ul>
                 </div>
             </div>
-            <div className="lg:w-1/2 flex justify-center">
+            <div className="lg:w-1/2 flex justify-center items-start">
                 <div className="
                     bg-gradient-to-br
                     from-eco-800 via-eco-700 to-slate-900
