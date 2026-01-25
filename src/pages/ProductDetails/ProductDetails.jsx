@@ -18,11 +18,20 @@ import img from "./bag.jpg"
 import { useParams } from 'react-router-dom';
 import { getProductById, getRecommendedProducts } from '../../services/productService';
 import { Box } from "@mui/material";
+import FullScreenLoader from '../../components/common/FullScreenLoader';
+import EcoAlert from '../../components/common/EcoAlertDialog';
 
 function ProductDetails() {
     const { product_id } = useParams();
     const [productData, setProductData] = React.useState(null);
+    const [loading, setLoading] = React.useState(true);
+    const [loadingMessage, setLoadingMessage] = React.useState("Getting Product Details...");
     const [recommendedProducts, setRecommendedProducts] = React.useState([]);
+    const [alert, setAlert] = React.useState({
+        open: false,
+        type: "success",
+        message: ""
+    });
     const chartData = [
         { name: 'Raw Material', Conventional: 40, EcoFriendly: 18 },
         { name: 'Manufacturing', Conventional: 30, EcoFriendly: 14 },
@@ -42,10 +51,19 @@ function ProductDetails() {
 
     useEffect(() => {
         console.log("Product ID:", product_id);
+        setLoading(true);
+        setLoadingMessage("Getting Product Details...");
         getProductById(product_id).then((data) => {
             console.log("Product data:", data);
             setProductData(data.data.data);
+            setLoading(false);
         }).catch((error) => {
+            setLoading(false);
+            setAlert({
+                open: true,
+                type: "error",
+                message: "Error getting product data"
+            });
             console.error("Error fetching product data:", error);
         });
 
@@ -53,6 +71,11 @@ function ProductDetails() {
             console.log("Recommended products:", data.data);
             setRecommendedProducts(data.data.data.recommended_products);
         }).catch((error) => {
+            setAlert({
+                open: true,
+                type: "error",
+                message: "Error getting recommended products"
+            });
             console.error("Error fetching recommended products:", error);
         });
     }, [product_id]);
@@ -107,6 +130,16 @@ function ProductDetails() {
 
     return (
         <div>
+            <FullScreenLoader
+                open={loading}
+                message={loadingMessage}
+            />
+            <EcoAlert
+                open={alert.open}
+                type={alert.type}
+                message={alert.message}
+                onClose={() => setAlert({ ...alert, open: false })}
+            />
             <div className="min-h-screen flex flex-col font-sans text-slate-800 bg-gradient-to-br from-eco-100 via-sky-50 to-eco-50 selection:bg-eco-200">
                 {/* Header */}
                 <header className="bg-white/70 backdrop-blur-xl text-eco-900 shadow-lg shadow-eco-100/20 sticky top-0 z-50 border-b border-white/50 transition-all duration-300">
